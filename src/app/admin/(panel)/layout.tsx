@@ -4,7 +4,7 @@ import { requireAdmin } from "@/lib/auth";
 
 const nav = [
   ["/admin", "Overview"], ["/admin/listings", "Listings"], ["/admin/categories", "Categories"],
-  ["/admin/reviews", "Reviews"], ["/admin/inquiries", "Inquiries"], ["/admin/settings", "Settings"], ["/admin/data", "Raw data"],
+  ["/admin/reviews", "Reviews"], ["/admin/inquiries", "Inquiries"], ["/admin/settings", "Settings"], ["/admin/data", "Raw data"], ["/admin/admins", "Admins"],
 ];
 
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {
