@@ -1,65 +1,40 @@
-import type { VendorCategorySlug } from "./categories";
+export type Status = "pending" | "approved" | "rejected" | "suspended";
+export type Kind = "venue" | "vendor";
+export type InquiryStatus = "new" | "contacted" | "confirmed" | "closed";
 
+export type Group = { id: string; name: string; order: number };
+export type Category = { slug: string; name: string; groupId: string; kind: Kind; description: string; order: number };
+export type Photo = { label: string; url: string };
+export type Pkg = { name: string; price: number; description: string };
+export type VenueInfo = {
+  minGuests: number; maxGuests: number; seated: number; standing: number;
+  weekdayPrice: number; weekendPrice: number; deposit: number;
+  cancellationPolicy: string; amenities: string[];
+};
+export type Listing = {
+  id: string; name: string; categorySlug: string; owner: string; tagline: string; description: string;
+  districts: string[]; address: string; priceMin: number; priceMax: number;
+  status: Status; featured: boolean; verified: boolean; trending: boolean;
+  contact: { phone: string; whatsapp: string; email: string };
+  social: { instagram: string; facebook: string; tiktok: string; youtube: string; website: string };
+  photos: Photo[]; videos: string[]; packages: Pkg[]; bookedDates: string[]; venue: VenueInfo;
+  createdAt: string; updatedAt: string;
+};
 export type Review = {
-  id: string;
-  author: string;
-  verified: boolean;
-  overall: number;
-  comment: string;
-  cleanliness?: number;
-  staff?: number;
-  food?: number;
-  decoration?: number;
-  parking?: number;
-  accessibility?: number;
-  valueForMoney?: number;
+  id: string; listingId: string; author: string; rating: number; comment: string; verified: boolean;
+  cleanliness: number; staff: number; food: number; decoration: number; parking: number;
+  accessibility: number; valueForMoney: number; createdAt: string;
 };
-
-export type Contact = { phone: string; email?: string; address?: string };
-export type SocialLinks = {
-  instagram?: string;
-  facebook?: string;
-  tiktok?: string;
-  youtube?: string;
-  whatsapp?: string;
+export type Inquiry = {
+  id: string; listingId: string; name: string; phone: string; email: string;
+  eventDate: string; guests: number; message: string; status: InquiryStatus; createdAt: string;
 };
-export type ServicePackage = { name: string; price: number; description: string };
-export type GalleryItem = { label: string; url: string };
-
-export type Venue = {
-  id: string;
-  name: string;
-  district: string;
-  description: string;
-  capacity: { minGuests: number; maxGuests: number; seated: number; standing: number };
-  pricing: {
-    startingPrice: number;
-    weekday: number;
-    weekend: number;
-    deposit: number;
-    cancellationPolicy: string;
-  };
-  bookedDates: string[];
-  amenities: string[];
-  gallery: GalleryItem[];
-  videos: string[];
-  reviews: Review[];
-  contact: Contact;
-  social: SocialLinks;
+export type Settings = {
+  siteName: string; tagline: string; heroTitle: string; heroSubtitle: string;
+  contactPhone: string; contactEmail: string; contactAddress: string; whatsapp: string; footerNote: string;
+  districts: string[]; amenities: string[];
 };
-
-export type Vendor = {
-  id: string;
-  category: VendorCategorySlug;
-  businessName: string;
-  owner: string;
-  portfolio: string;
-  packages: ServicePackage[];
-  startingPrice: number;
-  bookedDates: string[];
-  photos: string[];
-  videos: string[];
-  reviews: Review[];
-  contact: Contact;
-  social: SocialLinks;
+export type Db = {
+  settings: Settings; groups: Group[]; categories: Category[];
+  listings: Listing[]; reviews: Review[]; inquiries: Inquiry[];
 };
