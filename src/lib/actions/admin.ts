@@ -213,7 +213,7 @@ export async function deleteReviewAction(fd: FormData): Promise<void> {
 }
 
 // ---------- inquiries ----------
-export async function saveInquiryAction(fd: FormData): Promise<void> {
+export async function setInquiryStatusAction(fd: FormData): Promise<void> {
   await requireAdmin();
   const id = str(fd, "id");
   const s = str(fd, "status") as InquiryStatus;
@@ -223,8 +223,32 @@ export async function saveInquiryAction(fd: FormData): Promise<void> {
     if (q) q.status = s;
   });
   touch();
+  redirect("/admin/inquiries?saved=1");
 }
 
+export async function saveInquiryAction(fd: FormData): Promise<void> {
+  await requireAdmin();
+  const id = str(fd, "id");
+  const s = str(fd, "status") as InquiryStatus;
+  const data = {
+    listingId: str(fd, "listingId"),
+    name: str(fd, "name"),
+    phone: str(fd, "phone"),
+    email: str(fd, "email"),
+    eventDate: str(fd, "eventDate"),
+    guests: Math.max(0, Math.round(num(fd, "guests"))),
+    message: str(fd, "message"),
+    status: INQ.includes(s) ? s : ("new" as InquiryStatus),
+  };
+  if (!data.name) redirect("/admin/inquiries?error=name");
+  await mutate((db) => {
+    const q = id ? db.inquiries.find((x) => x.id === id) : undefined;
+    if (q) Object.assign(q, data);
+    else if (!id) db.inquiries.unshift({ id: newId(), ...data, createdAt: new Date().toISOString() });
+  });
+  touch();
+  redirect("/admin/inquiries?saved=1");
+}
 export async function deleteInquiryAction(fd: FormData): Promise<void> {
   await requireAdmin();
   const id = str(fd, "id");
