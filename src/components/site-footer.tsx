@@ -1,10 +1,10 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { readDb } from "@/lib/db";
 
 export async function SiteFooter() {
   const { settings: s } = await readDb();
   return (
-    <footer className="mt-20 border-t border-line bg-cream-100">
+    <footer id="contact" className="mt-20 border-t border-line bg-cream-100">
       <div className="container-page grid gap-8 py-12 md:grid-cols-3">
         <div>
           <p className="font-display text-xl font-semibold text-wine-700">{s.siteName}</p>

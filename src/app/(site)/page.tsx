@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { ListingGrid } from "@/components/listing-cards";
 import { categoryHref, readDb, searchListings } from "@/lib/db";
 
@@ -8,13 +8,15 @@ export default async function Home() {
   const db = await readDb();
   const s = db.settings;
   const featured = searchListings(db).filter((l) => l.featured).slice(0, 6);
-  const groups = [...db.groups].sort((a, b) => a.order - b.order);
+  const groups = [...db.groups].filter((g) => g.id !== "planning").sort((a, b) => a.order - b.order);
 
   return (
     <>
-      <section className="bg-gradient-to-br from-wine-900 via-wine-700 to-wine-600 text-white">
-        <div className="container-page py-20 sm:py-28">
-          <p className="text-sm uppercase tracking-[0.25em] text-gold-400">Rwanda wedding marketplace</p>
+      <section className="relative overflow-hidden bg-wine-900 text-white">
+        <div aria-hidden className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/hero/hero-1.jpg')" }} />
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-wine-900/90 via-wine-700/75 to-wine-600/60" />
+        <div className="container-page relative py-20 sm:py-28">
+          <p className="text-sm uppercase tracking-[0.25em] text-gold-400">Your wedding Â· your vision Â· our expertise</p>
           <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight sm:text-6xl">{s.heroTitle}</h1>
           <p className="mt-5 max-w-2xl text-lg text-white/80">{s.heroSubtitle}</p>
           <form action="/vendors" method="get" className="mt-8 flex max-w-3xl flex-col gap-3 rounded-2xl bg-white p-3 text-ink shadow-xl sm:flex-row">

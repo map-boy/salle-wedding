@@ -7,7 +7,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 const playfair = Playfair_Display({ variable: "--font-playfair", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Salle Wedding - venues and vendors in Rwanda",
+  title: "Wacu Events - wedding venues and vendors in Rwanda",
   description: "Find, compare and book trusted wedding venues and vendors in Rwanda.",
 };
 

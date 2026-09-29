@@ -17,9 +17,9 @@ const AMENITIES = [
 ];
 
 const GROUPS: [string, string][] = [
-  ["venues", "Venues"], ["food", "Food & Cake"], ["media", "Photo & Video"], ["decor", "Decor & Rentals"],
-  ["beauty", "Beauty & Fashion"], ["transport", "Transport"], ["entertainment", "Entertainment"],
-  ["planning", "Planning"], ["gifts", "Rings, Gifts & Invitations"], ["stay", "Stay & Honeymoon"],
+  ["venues", "Wedding venues"], ["food", "Catering & cake"], ["media", "Photographers & videographers"], ["decor", "Decor & Rentals"],
+  ["beauty", "Beauty & Fashion"], ["transport", "Transport"], ["entertainment", "Entertainment and coordination"],
+  ["planning", "Planning"], ["gifts", "Rings, Gifts & Invitations"], ["stay", "Accommodation and honeymoon"], ["drinks", "Drinks & beverages"],
 ];
 
 const CATS: [string, string, string, Kind, string][] = [
@@ -45,6 +45,7 @@ const CATS: [string, string, string, Kind, string][] = [
   ["invitations", "Invitations", "gifts", "vendor", "Printed and digital invitations."],
   ["accommodation", "Accommodation", "stay", "vendor", "Hotels and lodges for guests."],
   ["honeymoon", "Honeymoon Planning", "stay", "vendor", "Honeymoon packages and trips."],
+  ["drinks-beverages", "Drinks & Beverages", "drinks", "vendor", "Wedding drinks and beverages."],
 ];
 
 type Seed = Partial<Listing> & { id: string; name: string; categorySlug: string };
@@ -108,10 +109,10 @@ export function makeSeed(): Db {
 
   return {
     settings: {
-      siteName: "Salle Wedding",
-      tagline: "Find and book trusted wedding venues and vendors in Rwanda",
-      heroTitle: "Plan your Rwandan wedding in one place",
-      heroSubtitle: "Compare venues, photographers, caterers, decorators and more. Send a request and plan with confidence.",
+      siteName: "Wacu Events",
+      tagline: "Your wedding · your vision · our expertise",
+      heroTitle: "Discover Rwanda's best venues, photographers, caterers & more",
+      heroSubtitle: "All in one place. Compare venues and vendors, send a request and plan your wedding.",
       contactPhone: "+250 700 000 000", contactEmail: "hello@example.com", contactAddress: "Kigali, Rwanda", whatsapp: "+250700000000",
       footerNote: "Listings are reviewed by our team before they appear.",
       districts: DISTRICTS, amenities: AMENITIES,
