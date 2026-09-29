@@ -1,11 +1,12 @@
 import { promises as fs } from "fs";
+import os from "os";
 import path from "path";
 import { randomUUID } from "crypto";
 import { emptyListing, emptyVenue } from "./defaults";
 import { makeSeed } from "./seed";
 import type { Category, Db, Kind, Listing } from "./types";
 
-const DIR = path.join(process.cwd(), "data");
+const DIR = process.env.VERCEL ? path.join(os.tmpdir(), "jeph-data") : path.join(process.cwd(), "data");
 const FILE = path.join(DIR, "db.json");
 
 export const newId = () => randomUUID().replace(/-/g, "").slice(0, 10);

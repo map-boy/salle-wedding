@@ -1,10 +1,11 @@
 import { promises as fs } from "fs";
+import os from "os";
 import path from "path";
 import { randomUUID } from "crypto";
 
 export type Admin = { email: string; name: string; addedBy: string; createdAt: string };
 
-const DIR = path.join(process.cwd(), "data");
+const DIR = process.env.VERCEL ? path.join(os.tmpdir(), "jeph-data") : path.join(process.cwd(), "data");
 const FILE = path.join(DIR, "admins.json");
 
 export const rootEmail = () => (process.env.ROOT_ADMIN_EMAIL ?? "").trim().toLowerCase();

@@ -6,7 +6,7 @@ import { isAllowed, rootEmail } from "./admins";
 
 const COOKIE = "salle_admin";
 const DAYS = 7;
-const PROJECT = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ?? "salle-wedding";
+const PROJECT = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ?? "";
 const JWKS = createRemoteJWKSet(
   new URL("https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com"),
 );
