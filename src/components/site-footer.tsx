@@ -1,8 +1,10 @@
-﻿import Link from "next/link";
+import Link from "next/link";
+import { pairs } from "@/lib/content";
 import { readDb } from "@/lib/db";
 
 export async function SiteFooter() {
   const { settings: s } = await readDb();
+  const links = pairs(s, "footer.links");
   return (
     <footer id="contact" className="mt-20 border-t border-line bg-cream-100">
       <div className="container-page grid gap-8 py-12 md:grid-cols-3">
@@ -13,9 +15,9 @@ export async function SiteFooter() {
         <div className="text-sm">
           <p className="label">Explore</p>
           <ul className="space-y-1.5">
-            <li><Link href="/venues" className="hover:text-wine-600">Venues</Link></li>
-            <li><Link href="/vendors" className="hover:text-wine-600">Vendors</Link></li>
-            <li><Link href="/join" className="hover:text-wine-600">Join as vendor</Link></li>
+            {links.map(([label, href]) => (
+              <li key={label + href}><Link href={href} className="hover:text-wine-600">{label}</Link></li>
+            ))}
           </ul>
         </div>
         <div className="text-sm">

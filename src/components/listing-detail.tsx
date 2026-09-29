@@ -2,6 +2,8 @@ import { submitInquiry } from "@/lib/actions/public";
 import { categoryOf, kindOf, ratingOf } from "@/lib/db";
 import { digits, fmtDate, priceText, rwf } from "@/lib/format";
 import type { Db, Listing } from "@/lib/types";
+import { amenityEmoji, catEmoji } from "@/lib/emoji";
+import { isPremium } from "@/lib/plans";
 import { Badge, Banner, Stars } from "./ui";
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
@@ -27,6 +29,7 @@ export function ListingDetail({
 }: { db: Db; l: Listing; back: string; sent: boolean; error: string }) {
   const cat = categoryOf(db, l.categorySlug);
   const isVenue = kindOf(db, l) === "venue";
+  const hidePrice = !!cat?.hidePrice;
   const { avg, count } = ratingOf(db, l.id);
   const reviews = db.reviews.filter((r) => r.listingId === l.id);
   const v = l.venue;
@@ -38,10 +41,11 @@ export function ListingDetail({
 
   return (
     <div className="container-page py-10">
-      <p className="text-sm text-muted">{cat?.name ?? "Listing"}</p>
+      <p className="text-sm text-muted">{(cat ? catEmoji(cat) + " " : "") + (cat?.name ?? "Listing")}</p>
       <div className="mt-1 flex flex-wrap items-center gap-3">
         <h1 className="text-3xl font-semibold sm:text-4xl">{l.name}</h1>
         {l.featured && <Badge tone="gold">Featured</Badge>}
+        {isPremium(l) && <Badge tone="wine">Premium</Badge>}
         {l.verified && <Badge tone="green">Verified</Badge>}
         {l.trending && <Badge tone="wine">Trending</Badge>}
       </div>
@@ -49,7 +53,7 @@ export function ListingDetail({
       <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-sm">
         <Stars avg={avg} count={count} />
         <span className="text-muted">{l.districts.join(", ") || "Rwanda"}{l.address ? ` - ${l.address}` : ""}</span>
-        <span className="font-medium text-wine-700">{priceText(l)}</span>
+        {!hidePrice && <span className="font-medium text-wine-700">{priceText(l)}</span>}
       </div>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-3">
@@ -72,19 +76,19 @@ export function ListingDetail({
 
           {isVenue && (
             <Block title="Capacity & pricing">
-              <Row k="Guests" v={v.maxGuests ? `${v.minGuests || 0} to ${v.maxGuests}` : "Ask venue"} />
-              <Row k="Seated / standing" v={v.seated || v.standing ? `${v.seated} / ${v.standing}` : "Ask venue"} />
-              <Row k="Weekday price" v={v.weekdayPrice ? rwf(v.weekdayPrice) : "Ask venue"} />
-              <Row k="Weekend price" v={v.weekendPrice ? rwf(v.weekendPrice) : "Ask venue"} />
-              <Row k="Deposit" v={v.deposit ? rwf(v.deposit) : "Ask venue"} />
-              <Row k="Cancellation" v={v.cancellationPolicy || "Ask venue"} />
+              <Row k="👥 Guests" v={v.maxGuests ? `${v.minGuests || 0} to ${v.maxGuests}` : "Ask venue"} />
+              <Row k="🪑 Seated / standing" v={v.seated || v.standing ? `${v.seated} / ${v.standing}` : "Ask venue"} />
+              <Row k="💵 Weekday price" v={v.weekdayPrice ? rwf(v.weekdayPrice) : "Ask venue"} />
+              <Row k="💵 Weekend price" v={v.weekendPrice ? rwf(v.weekendPrice) : "Ask venue"} />
+              <Row k="💵 Deposit" v={v.deposit ? rwf(v.deposit) : "Ask venue"} />
+              <Row k="📝 Cancellation" v={v.cancellationPolicy || "Ask venue"} />
             </Block>
           )}
 
           {isVenue && v.amenities.length > 0 && (
             <Block title="Amenities">
               <div className="flex flex-wrap gap-2">
-                {v.amenities.map((a) => <span key={a} className="rounded-full border border-line bg-cream-50 px-3 py-1 text-sm">{a}</span>)}
+                {v.amenities.map((a) => <span key={a} className="rounded-full border border-line bg-cream-50 px-3 py-1 text-sm">{amenityEmoji(a) + " " + a}</span>)}
               </div>
             </Block>
           )}
@@ -95,7 +99,7 @@ export function ListingDetail({
                 {l.packages.map((p, i) => (
                   <div key={i} className="rounded-xl border border-line p-4">
                     <p className="font-semibold">{p.name}</p>
-                    <p className="text-sm font-medium text-wine-700">{rwf(p.price)}</p>
+                    {!hidePrice && <p className="text-sm font-medium text-wine-700">{rwf(p.price)}</p>}
                     <p className="mt-1 text-sm text-muted">{p.description}</p>
                   </div>
                 ))}

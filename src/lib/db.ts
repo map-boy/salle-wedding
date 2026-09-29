@@ -3,6 +3,7 @@ import os from "os";
 import path from "path";
 import { randomUUID } from "crypto";
 import { emptyListing, emptyVenue } from "./defaults";
+import { isPremium } from "./plans";
 import { makeSeed } from "./seed";
 import type { Category, Db, Kind, Listing } from "./types";
 
@@ -115,7 +116,7 @@ export function searchListings(db: Db, f: Filters = {}): Listing[] {
   }
   const low = (l: Listing) => l.priceMin || l.priceMax || Number.MAX_SAFE_INTEGER;
   const high = (l: Listing) => l.priceMax || l.priceMin || 0;
-  const rank = (l: Listing) => (l.featured ? 2 : 0) + (l.trending ? 1 : 0);
+  const rank = (l: Listing) => (l.featured ? 4 : 0) + (isPremium(l) ? 2 : 0) + (l.trending ? 1 : 0);
   switch (f.sort) {
     case "price-asc": out.sort((a, b) => low(a) - low(b)); break;
     case "price-desc": out.sort((a, b) => high(b) - high(a)); break;

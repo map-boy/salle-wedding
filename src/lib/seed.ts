@@ -53,7 +53,7 @@ const L = (p: Seed): Listing => ({ ...emptyListing(p.categorySlug), status: "app
 
 export function makeSeed(): Db {
   const groups: Group[] = GROUPS.map(([id, name], order) => ({ id, name, order }));
-  const categories: Category[] = CATS.map(([slug, name, groupId, kind, description], order) => ({ slug, name, groupId, kind, description, order }));
+  const categories: Category[] = CATS.map(([slug, name, groupId, kind, description], order) => ({ slug, name, groupId, kind, description, order, ...(slug === "drinks-beverages" ? { hidePrice: true } : {}) }));
 
   const listings: Listing[] = [
     L({
@@ -113,8 +113,15 @@ export function makeSeed(): Db {
       tagline: "Your wedding · your vision · our expertise",
       heroTitle: "Discover Rwanda's best venues, photographers, caterers & more",
       heroSubtitle: "All in one place. Compare venues and vendors, send a request and plan your wedding.",
-      contactPhone: "+250 700 000 000", contactEmail: "hello@example.com", contactAddress: "Kigali, Rwanda", whatsapp: "+250700000000",
+      contactPhone: "+250 700 000 000", contactEmail: "hello@example.com", contactAddress: "Kigali, Rwanda", whatsapp: "+250781466135",
       footerNote: "Listings are reviewed by our team before they appear.",
+      siteUrl: "",
+      content: {},
+      heroImage: "/hero/hero-1.jpg",
+      seoImage: "/hero/SEO.jpg",
+      seoDescription: "Discover Rwanda's best wedding venues, photographers, caterers, decorators, wedding cars, DJs & MCs and more. Plan your wedding in one place with Wacu Events.",
+      aboutText: "Wacu Events brings Rwanda's wedding venues and vendors together in one place, so couples can discover the right people, compare their options and plan with confidence.",
+      appointmentSlots: ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00"],
       districts: DISTRICTS, amenities: AMENITIES,
     },
     groups, categories, listings, reviews,

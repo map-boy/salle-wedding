@@ -2,10 +2,16 @@
 import { Banner } from "@/components/ui";
 import { submitAppointment } from "@/lib/actions/appointments";
 import { SLOTS, isBookable, takenSlots, todayKigali } from "@/lib/appointments";
+import { txt } from "@/lib/content";
 import { readDb } from "@/lib/db";
 import { first, fmtDate } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
+
+export const metadata = {
+  title: "Plan your wedding",
+  description: "Schedule an appointment with the wedding planner and start planning your wedding.",
+};
 
 const DOW = ["M", "T", "W", "T", "F", "S", "S"];
 
@@ -18,6 +24,7 @@ export default async function PlanningPage(props: { searchParams: Promise<Record
   const sp = await props.searchParams;
   const db = await readDb();
   const taken = takenSlots(db.inquiries);
+  const slots = (db.settings.appointmentSlots ?? []).length ? db.settings.appointmentSlots : SLOTS;
   const today = todayKigali();
   const curMonth = today.slice(0, 7);
   const maxMonth = addMonth(curMonth, 6);
@@ -41,8 +48,8 @@ export default async function PlanningPage(props: { searchParams: Promise<Record
   return (
     <div className="container-page py-12">
       <p className="text-sm uppercase tracking-[0.25em] text-gold-500">Start planning</p>
-      <h1 className="mt-2 text-3xl font-semibold sm:text-5xl">Plan your wedding with Wacu planner</h1>
-      <p className="mt-3 max-w-2xl text-lg text-muted">Schedule your appointment. Pick a day and a time and we will contact you to plan your wedding.</p>
+      <h1 className="mt-2 text-3xl font-semibold sm:text-5xl">{txt(db.settings, "planning.title")}</h1>
+      <p className="mt-3 max-w-2xl text-lg text-muted">{txt(db.settings, "planning.intro")}</p>
 
       <div className="mt-6">
         {sent && <Banner>Thank you. Your appointment request was sent and we will contact you soon to confirm.</Banner>}
@@ -69,7 +76,7 @@ export default async function PlanningPage(props: { searchParams: Promise<Record
               const ds = `${month}-${String(d).padStart(2, "0")}`;
               const base = "flex h-10 items-center justify-center rounded-lg";
               if (!isBookable(ds, today)) return <div key={ds} className={`${base} text-zinc-300`}>{d}</div>;
-              if (SLOTS.every((t) => taken.has(`${ds}|${t}`))) return <div key={ds} className={`${base} bg-red-50 text-bad line-through`}>{d}</div>;
+              if (slots.every((t) => taken.has(`${ds}|${t}`))) return <div key={ds} className={`${base} bg-red-50 text-bad line-through`}>{d}</div>;
               const selected = ds === date;
               return (
                 <Link key={ds} href={`/planning?month=${month}&date=${ds}#book`}
@@ -92,7 +99,7 @@ export default async function PlanningPage(props: { searchParams: Promise<Record
               <div>
                 <p className="label">Choose a time</p>
                 <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-                  {SLOTS.map((t) => taken.has(`${date}|${t}`) ? (
+                  {slots.map((t) => taken.has(`${date}|${t}`) ? (
                     <span key={t} className="rounded-xl border border-line bg-red-50 px-3 py-2 text-center text-sm text-bad line-through">{t}</span>
                   ) : (
                     <label key={t} className="cursor-pointer">
@@ -110,7 +117,7 @@ export default async function PlanningPage(props: { searchParams: Promise<Record
                 <input id="eventDate" name="eventDate" type="date" className="input" />
               </div>
               <textarea name="message" rows={3} placeholder="Tell us about your wedding" className="input" />
-              <button type="submit" className="btn btn-primary w-full">Contact us</button>
+              <button type="submit" className="btn btn-primary w-full">{txt(db.settings, "planning.submit")}</button>
             </form>
           ) : (
             <div className="flex h-full min-h-48 items-center justify-center text-center text-muted">Pick an available day in the calendar to see the times.</div>

@@ -1,23 +1,51 @@
 import { submitVendorApplication } from "@/lib/actions/public";
 import { Banner } from "@/components/ui";
+import { txt } from "@/lib/content";
 import { readDb } from "@/lib/db";
-import { first } from "@/lib/format";
+import { first, rwf } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
+
+export const metadata = {
+  title: "Join as a vendor",
+  description: "Apply to list your wedding business on Wacu Events.",
+};
 
 export default async function JoinPage(props: PageProps<"/join">) {
   const sp = await props.searchParams;
   const db = await readDb();
+  const s = db.settings;
   const groups = [...db.groups].sort((a, b) => a.order - b.order);
+  const chosen = first(sp.plan) === "premium" ? "premium" : "free";
+  const planLine = (id: string) => {
+    const price = Number(txt(s, "plan." + id + ".price").replace(/[^0-9]/g, "")) || 0;
+    const period = txt(s, "plan." + id + ".period");
+    return rwf(price) + (period ? " / " + period : "") + " - " + txt(s, "plan." + id + ".commission") + "% commission";
+  };
   return (
     <div className="container-page max-w-2xl py-12">
-      <h1 className="text-3xl font-semibold sm:text-4xl">Join as a vendor</h1>
-      <p className="mt-2 text-muted">Tell us about your business. We review every application before it appears on the site.</p>
+      <h1 className="text-3xl font-semibold sm:text-4xl">{txt(s, "join.title")}</h1>
+      <p className="mt-2 text-muted">{txt(s, "join.intro")}</p>
       <div className="mt-6">
         {first(sp.sent) === "1" && <Banner>Application received. We will contact you after review.</Banner>}
         {first(sp.error) === "missing" && <Banner tone="bad">Please fill in the business name, category and phone.</Banner>}
+        {first(sp.error) === "terms" && <Banner tone="bad">Please accept the Vendor Terms to continue.</Banner>}
       </div>
       <form action={submitVendorApplication} className="card grid gap-4 p-6 sm:grid-cols-2">
+        <div className="sm:col-span-2">
+          <p className="label">{txt(s, "join.planTitle")}</p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {["free", "premium"].map((id) => (
+              <label key={id} className="flex cursor-pointer items-start gap-3 rounded-xl border border-line p-4 text-sm has-[:checked]:border-wine-600 has-[:checked]:bg-wine-50">
+                <input type="radio" name="plan" value={id} defaultChecked={id === chosen} className="mt-1" />
+                <span>
+                  <span className="block font-medium">{txt(s, "plan." + id + ".name")}</span>
+                  <span className="text-muted">{planLine(id)}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
         <div className="sm:col-span-2"><label className="label" htmlFor="name">Business name</label><input id="name" name="name" required className="input" /></div>
         <div><label className="label" htmlFor="owner">Owner</label><input id="owner" name="owner" className="input" /></div>
         <div>
@@ -37,11 +65,15 @@ export default async function JoinPage(props: PageProps<"/join">) {
           <label className="label" htmlFor="district">District</label>
           <select id="district" name="district" className="input" defaultValue="">
             <option value="">Select</option>
-            {db.settings.districts.map((d) => <option key={d} value={d}>{d}</option>)}
+            {s.districts.map((d) => <option key={d} value={d}>{d}</option>)}
           </select>
         </div>
         <div><label className="label" htmlFor="priceMin">Starting price (RWF)</label><input id="priceMin" name="priceMin" type="number" min={0} className="input" /></div>
         <div className="sm:col-span-2"><label className="label" htmlFor="description">About your business</label><textarea id="description" name="description" rows={4} className="input" /></div>
+        <label className="flex items-start gap-2 text-sm sm:col-span-2">
+          <input type="checkbox" name="terms" required className="mt-1" />
+          <span>{txt(s, "join.termsText")}</span>
+        </label>
         <div className="sm:col-span-2"><button type="submit" className="btn btn-primary w-full sm:w-auto">Submit application</button></div>
       </form>
     </div>

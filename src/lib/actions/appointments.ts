@@ -1,7 +1,7 @@
 ﻿"use server";
 
 import { redirect } from "next/navigation";
-import { mutate, newId } from "../db";
+import { mutate, newId, readDb } from "../db";
 import { SLOTS, isBookable, isDateStr, takenSlots } from "../appointments";
 
 const str = (fd: FormData, k: string) => String(fd.get(k) ?? "").trim();
@@ -12,7 +12,9 @@ export async function submitAppointment(fd: FormData): Promise<void> {
   const name = str(fd, "name");
   const phone = str(fd, "phone");
   if (!isBookable(date)) redirect("/planning?error=invalid");
-  if (!name || !phone || !SLOTS.includes(time)) redirect(`/planning?date=${date}&error=missing`);
+  const cfg = (await readDb()).settings.appointmentSlots ?? [];
+  const slots = cfg.length ? cfg : SLOTS;
+  if (!name || !phone || !slots.includes(time)) redirect(`/planning?date=${date}&error=missing`);
   const wedding = str(fd, "eventDate");
   const note = str(fd, "message");
   let taken = false as boolean;

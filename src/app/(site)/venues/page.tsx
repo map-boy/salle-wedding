@@ -5,6 +5,11 @@ import { first } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+  title: "Wedding venues in Rwanda",
+  description: "Browse and compare wedding venues in Rwanda by district, capacity and price.",
+};
+
 export default async function VenuesPage(props: PageProps<"/venues">) {
   const sp = await props.searchParams;
   const db = await readDb();
@@ -15,7 +20,7 @@ export default async function VenuesPage(props: PageProps<"/venues">) {
   });
   return (
     <div className="container-page py-10">
-      <h1 className="text-3xl font-semibold sm:text-4xl">Wedding venues</h1>
+      <h1 className="text-3xl font-semibold sm:text-4xl">{"🏛️ "}Wedding venues</h1>
       <p className="mt-2 text-muted">{list.length} venue{list.length === 1 ? "" : "s"} found</p>
       <div className="mt-6">
         <BrowseFilters

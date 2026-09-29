@@ -35,13 +35,15 @@ export async function submitVendorApplication(fd: FormData): Promise<void> {
   if (!name || !phone || !db.categories.some((c) => c.slug === categorySlug)) redirect("/join?error=missing");
   const now = new Date().toISOString();
   const district = str(fd, "district");
+  if (fd.get("terms") !== "on") redirect("/join?error=terms");
+  const planRequested = str(fd, "plan") === "premium" ? "premium" : "free";
   await mutate((d) => {
     d.listings.unshift({
       ...emptyListing(categorySlug),
       id: newId(), name, owner: str(fd, "owner"), description: str(fd, "description"),
       districts: district ? [district] : [], priceMin: Number(str(fd, "priceMin")) || 0,
       contact: { phone, whatsapp: phone, email: str(fd, "email") },
-      status: "pending", createdAt: now, updatedAt: now,
+      status: "pending", planRequested, createdAt: now, updatedAt: now,
     });
   });
   redirect("/join?sent=1");

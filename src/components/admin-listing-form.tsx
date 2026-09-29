@@ -61,6 +61,15 @@ export function ListingForm({ l, db, isNew }: { l: Listing; db: Db; isNew: boole
               {["pending", "approved", "rejected", "suspended"].map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
+          <div>
+            <label className="label" htmlFor="plan">Vendor plan</label>
+            <select id="plan" name="plan" defaultValue={l.plan} className="input">
+              <option value="free">Free</option>
+              <option value="premium">Premium</option>
+            </select>
+          </div>
+          <F label="Premium valid until (YYYY-MM-DD)" name="premiumUntil" value={l.premiumUntil} />
+          {l.planRequested === "premium" && <p className="text-xs text-wine-700 sm:col-span-2">This vendor applied for Premium. Set the plan and the end date once it is activated.</p>}
           <div className="flex items-end gap-5 pb-2 text-sm">
             <label className="flex items-center gap-2"><input type="checkbox" name="featured" defaultChecked={l.featured} />Featured</label>
             <label className="flex items-center gap-2"><input type="checkbox" name="verified" defaultChecked={l.verified} />Verified</label>

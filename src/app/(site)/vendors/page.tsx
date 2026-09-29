@@ -6,6 +6,11 @@ import { first } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = {
+  title: "Wedding vendors in Rwanda",
+  description: "Photographers, caterers, decorators, wedding cars, DJs & MCs and more for your Rwandan wedding.",
+};
+
 export default async function VendorsPage(props: PageProps<"/vendors">) {
   const sp = await props.searchParams;
   const db = await readDb();
