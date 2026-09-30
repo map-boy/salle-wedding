@@ -8,7 +8,7 @@ type Svc = { id: string; name: string; href: string; emoji: string };
 type Item = { label: string; href: string };
 
 export function SiteMenu({ items, services }: { items: Item[]; services: Svc[] }) {
-  const ref = useRef<HTMLDetailsElement>(null);
+  const ref = useRef<HTMLDetailsElement>(null); const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
 
   const close = useCallback(() => {
@@ -34,10 +34,10 @@ export function SiteMenu({ items, services }: { items: Item[]; services: Svc[] }
     };
   }, [close]);
 
-  const item = "block rounded-lg px-3 py-2 text-sm hover:bg-wine-50";
+  const cancel = () => { if (timer.current) { clearTimeout(timer.current); timer.current = null; } }; const scheduleClose = () => { cancel(); timer.current = setTimeout(close, 250); }; const item = "block rounded-lg px-3 py-2 text-sm hover:bg-wine-50";
 
   return (
-    <details ref={ref} className="relative ml-auto">
+    <details ref={ref} className="relative ml-auto" onMouseEnter={cancel} onMouseLeave={scheduleClose}>
       <summary aria-label="Menu" className="btn btn-outline list-none px-4 text-xl leading-none">{"\u2261"}</summary>
       <div
         className="absolute right-0 mt-2 max-h-[80vh] w-72 overflow-y-auto rounded-xl border border-line bg-white p-2 shadow-lg"

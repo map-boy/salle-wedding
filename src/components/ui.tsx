@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 
 const tones = {
-  wine: "bg-wine-50 text-wine-700",
-  gold: "bg-gold-100 text-gold-500",
+  wine: "bg-wine-700 text-white",
+  gold: "bg-gold-400 text-ink",
   green: "bg-green-50 text-ok",
   amber: "bg-amber-50 text-warn",
   red: "bg-red-50 text-bad",

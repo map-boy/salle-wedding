@@ -19,7 +19,7 @@ export default async function Home() {
       <section className="relative overflow-hidden bg-wine-900 text-white">
         <div aria-hidden className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('" + hero + "')" }} />
         <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-wine-900/80 via-wine-900/40 to-wine-900/10" />
-        <div className="container-page relative py-20 sm:py-28">
+        <div aria-hidden className="bg-dots-light absolute inset-0 opacity-40" /><div className="container-page relative py-20 sm:py-28">
           <p className="text-sm uppercase tracking-[0.25em] text-gold-400">{s.tagline}</p>
           <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight sm:text-6xl">{s.heroTitle}</h1>
           <p className="mt-5 max-w-2xl text-lg text-white/80">{s.heroSubtitle}</p>
@@ -29,7 +29,7 @@ export default async function Home() {
               <option value="">All districts</option>
               {s.districts.map((d) => <option key={d} value={d}>{d}</option>)}
             </select>
-            <button type="submit" className="btn btn-primary">Search vendors</button>
+            <button type="submit" className="btn btn-accent">Search vendors</button>
             <button type="submit" formAction="/venues" className="btn btn-outline">Venues</button>
           </form>
         </div>
@@ -40,8 +40,8 @@ export default async function Home() {
         <p className="mt-2 text-muted">{txt(s, "home.categoriesSubtitle")}</p>
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {groups.map((g) => (
-            <div key={g.id} className="card p-6">
-              <h3 className="text-lg font-semibold text-wine-700">{g.name}</h3>
+            <div key={g.id} className="card card-hover p-6">
+              <h3 className="border-l-4 border-gold-400 pl-3 text-lg font-semibold text-wine-700">{g.name}</h3>
               <ul className="mt-3 space-y-1.5 text-sm">
                 {db.categories.filter((c) => c.groupId === g.id).sort((a, b) => a.order - b.order).map((c) => (
                   <li key={c.slug}><Link href={categoryHref(c)} className="text-muted transition hover:text-wine-600">{catEmoji(c) + " " + c.name}</Link></li>
@@ -53,7 +53,7 @@ export default async function Home() {
       </section>
 
       {featured.length > 0 && (
-        <section className="bg-cream-100 py-16">
+        <section className="bg-dots border-y border-line bg-cream-100 py-16">
           <div className="container-page">
             <div className="mb-8 flex items-end justify-between">
               <h2 className="text-3xl font-semibold">{txt(s, "home.featuredTitle")}</h2>
@@ -68,14 +68,14 @@ export default async function Home() {
         <h2 className="text-3xl font-semibold">{txt(s, "home.howTitle")}</h2>
         <div className="mt-8 grid gap-5 md:grid-cols-3">
           {steps.map(([t, d], i) => (
-            <div key={t + i} className="card p-6">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-wine-50 font-display text-lg text-wine-700">{i + 1}</span>
+            <div key={t + i} className="card card-hover p-6">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gold-100 font-display text-lg text-gold-500">{i + 1}</span>
               <h3 className="mt-4 text-lg font-semibold">{t}</h3>
               <p className="mt-1 text-sm text-muted">{d}</p>
             </div>
           ))}
         </div>
-        <div className="mt-12 rounded-2xl bg-wine-50 p-8 text-center">
+        <div className="mt-12 rounded-2xl border border-line bg-gradient-to-br from-white to-cream-100 p-8 text-center shadow-sm">
           <h3 className="text-2xl font-semibold">{txt(s, "home.vendorTitle")}</h3>
           <p className="mx-auto mt-2 max-w-xl text-muted">{txt(s, "home.vendorText")}</p>
           <Link href="/for-vendors" className="btn btn-primary mt-5">{txt(s, "home.vendorButton")}</Link>

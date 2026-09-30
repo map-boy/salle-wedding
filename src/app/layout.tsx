@@ -8,7 +8,7 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 const playfair = Playfair_Display({ variable: "--font-playfair", subsets: ["latin"] });
 
-export const viewport: Viewport = { themeColor: "#701c39" };
+export const viewport: Viewport = { themeColor: "#404040" };
 
 export async function generateMetadata(): Promise<Metadata> {
   const { settings: s } = await readDb();
