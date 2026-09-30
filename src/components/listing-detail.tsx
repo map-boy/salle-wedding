@@ -112,7 +112,7 @@ export function ListingDetail({
               <>
                 <p className="mb-3 text-sm text-muted">Already booked:</p>
                 <div className="flex flex-wrap gap-2">
-                  {booked.map((d) => <span key={d} className="rounded-full bg-red-50 px-3 py-1 text-sm text-bad">{fmtDate(d)}</span>)}
+                  {booked.map((d) => <span key={d} className="rounded-full bg-neutral-100 px-3 py-1 text-sm text-neutral-700">{fmtDate(d)}</span>)}
                 </div>
               </>
             ) : <p className="text-sm text-muted">No upcoming dates are marked as booked. Send a request to confirm your date.</p>}

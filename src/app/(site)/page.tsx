@@ -16,13 +16,13 @@ export default async function Home() {
 
   return (
     <>
-      <section className="relative overflow-hidden bg-wine-900 text-white">
+      <section className="relative overflow-hidden bg-[#d7b695] text-white">
         <div aria-hidden className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('" + hero + "')" }} />
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-wine-900/80 via-wine-900/40 to-wine-900/10" />
-        <div aria-hidden className="bg-dots-light absolute inset-0 opacity-40" /><div className="container-page relative py-20 sm:py-28">
-          <p className="text-sm uppercase tracking-[0.25em] text-gold-400">{s.tagline}</p>
-          <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight sm:text-6xl">{s.heroTitle}</h1>
-          <p className="mt-5 max-w-2xl text-lg text-white/80">{s.heroSubtitle}</p>
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-[#d7b695]/70 via-[#d7b695]/20 to-transparent" /><div aria-hidden className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/30 to-transparent" /><div aria-hidden className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full border border-white/40" /><div aria-hidden className="pointer-events-none absolute -right-36 -top-36 h-96 w-96 rounded-full border border-white/25" /><div aria-hidden className="pointer-events-none absolute -right-56 -top-56 h-[34rem] w-[34rem] rounded-full border border-white/15" /><div aria-hidden className="pointer-events-none absolute inset-3 rounded-2xl border border-white/30 sm:inset-5" />
+        <div className="container-page relative py-20 sm:py-28">
+          <p className="text-sm uppercase tracking-[0.25em] text-white drop-shadow"><span aria-hidden className="mr-3 inline-block h-px w-10 bg-white/80 align-middle" />{s.tagline}</p>
+          <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight sm:text-6xl drop-shadow-lg">{s.heroTitle}</h1>
+          <p className="mt-5 max-w-2xl text-lg text-white drop-shadow">{s.heroSubtitle}</p>
           <form action="/vendors" method="get" className="mt-8 flex max-w-3xl flex-col gap-3 rounded-2xl bg-white p-3 text-ink shadow-xl sm:flex-row">
             <input name="q" className="input sm:flex-1" placeholder={txt(s, "home.searchPlaceholder")} />
             <select name="district" className="input sm:w-48">

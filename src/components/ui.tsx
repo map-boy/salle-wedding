@@ -4,8 +4,8 @@ const tones = {
   wine: "bg-wine-700 text-white",
   gold: "bg-gold-400 text-ink",
   green: "bg-green-50 text-ok",
-  amber: "bg-amber-50 text-warn",
-  red: "bg-red-50 text-bad",
+  amber: "bg-neutral-100 text-neutral-700",
+  red: "bg-neutral-100 text-neutral-700",
   gray: "bg-zinc-100 text-zinc-600",
 } as const;
 
@@ -32,6 +32,6 @@ export function Empty({ children }: { children: ReactNode }) {
 }
 
 export function Banner({ tone = "ok", children }: { tone?: "ok" | "bad"; children: ReactNode }) {
-  const cls = tone === "ok" ? "border-green-200 bg-green-50 text-ok" : "border-red-200 bg-red-50 text-bad";
+  const cls = tone === "ok" ? "border-green-200 bg-green-50 text-ok" : "border-neutral-300 bg-neutral-100 text-neutral-700";
   return <div className={`mb-5 rounded-xl border px-4 py-3 text-sm ${cls}`}>{children}</div>;
 }

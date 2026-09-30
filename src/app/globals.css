@@ -13,12 +13,12 @@
   --color-wine-600: #525252;
   --color-wine-700: #404040;
   --color-wine-900: #171717;
-  --color-gold-100: #fef3c7;
-  --color-gold-400: #fbbf24;
-  --color-gold-500: #b45309;
+  --color-gold-100: #f5f5f5;
+  --color-gold-400: #d4d4d4;
+  --color-gold-500: #a3a3a3;
   --color-ok: #1f7a4d;
-  --color-warn: #a86a12;
-  --color-bad: #b3261e;
+  --color-warn: #737373;
+  --color-bad: #525252;
 }
 
 @theme inline {
@@ -77,3 +77,8 @@ h1, h2, h3 {
 }
 .reveal { animation: fade-up 0.5s ease both; }
 @media (prefers-reduced-motion: reduce) { .reveal { animation: none; } }
+.btn-accent { background: #e8a5a5 !important; color: #171717 !important; }
+.btn-accent:hover { background: #d98f8f !important; }
+
+.btn-primary { background: #e8a5a5 !important; color: #171717 !important; }
+.btn-primary:hover { background: #d98f8f !important; }

@@ -48,7 +48,7 @@ export function GoogleSignIn() {
       <button type="button" onClick={go} disabled={busy} className="btn btn-primary w-full">
         {busy ? "Signing in..." : "Continue with Google"}
       </button>
-      {msg && <p className="mt-3 text-sm text-red-700">{msg}</p>}
+      {msg && <p className="mt-3 text-sm text-neutral-700">{msg}</p>}
     </div>
   );
 }

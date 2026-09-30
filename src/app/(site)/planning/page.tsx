@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { Banner } from "@/components/ui";
 import { submitAppointment } from "@/lib/actions/appointments";
 import { SLOTS, isBookable, takenSlots, todayKigali } from "@/lib/appointments";
@@ -76,7 +76,7 @@ export default async function PlanningPage(props: { searchParams: Promise<Record
               const ds = `${month}-${String(d).padStart(2, "0")}`;
               const base = "flex h-10 items-center justify-center rounded-lg";
               if (!isBookable(ds, today)) return <div key={ds} className={`${base} text-zinc-300`}>{d}</div>;
-              if (slots.every((t) => taken.has(`${ds}|${t}`))) return <div key={ds} className={`${base} bg-red-50 text-bad line-through`}>{d}</div>;
+              if (slots.every((t) => taken.has(`${ds}|${t}`))) return <div key={ds} className={`${base} bg-neutral-100 text-neutral-700 line-through`}>{d}</div>;
               const selected = ds === date;
               return (
                 <Link key={ds} href={`/planning?month=${month}&date=${ds}#book`}
@@ -86,7 +86,7 @@ export default async function PlanningPage(props: { searchParams: Promise<Record
           </div>
           <div className="mt-5 flex flex-wrap gap-4 text-xs text-muted">
             <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded bg-green-100" /> Available</span>
-            <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded bg-red-100" /> Fully booked</span>
+            <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded bg-neutral-200" /> Fully booked</span>
             <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded bg-zinc-200" /> Not available</span>
           </div>
         </section>
@@ -100,7 +100,7 @@ export default async function PlanningPage(props: { searchParams: Promise<Record
                 <p className="label">Choose a time</p>
                 <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
                   {slots.map((t) => taken.has(`${date}|${t}`) ? (
-                    <span key={t} className="rounded-xl border border-line bg-red-50 px-3 py-2 text-center text-sm text-bad line-through">{t}</span>
+                    <span key={t} className="rounded-xl border border-line bg-neutral-100 px-3 py-2 text-center text-sm text-neutral-700 line-through">{t}</span>
                   ) : (
                     <label key={t} className="cursor-pointer">
                       <input type="radio" name="time" value={t} required className="peer sr-only" />
