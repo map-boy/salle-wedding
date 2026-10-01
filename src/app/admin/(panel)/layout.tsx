@@ -11,7 +11,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   await requireAdmin();
   return (
     <div className="flex min-h-screen flex-col md:flex-row">
-      <aside className="border-b border-line bg-white md:w-56 md:border-b-0 md:border-r">
+      <aside className="border-b border-line bg-paper md:w-56 md:border-b-0 md:border-r">
         <div className="flex items-center justify-between px-5 py-4 md:block">
           <p className="font-display text-lg font-semibold text-wine-700">Admin</p>
           <Link href="/" className="text-xs text-muted hover:text-wine-600 md:mt-1 md:block">View site</Link>

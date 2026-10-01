@@ -13,7 +13,7 @@ const config = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-export function GoogleSignIn() {
+export function GoogleSignIn({ endpoint = "/api/admin/session", redirectTo = "/admin" }: { endpoint?: string; redirectTo?: string } = {}) {
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -25,14 +25,14 @@ export function GoogleSignIn() {
       const auth = getAuth(app);
       const cred = await signInWithPopup(auth, new GoogleAuthProvider());
       const idToken = await cred.user.getIdToken();
-      const res = await fetch("/api/admin/session", {
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ idToken }),
       });
       await signOut(auth);
       if (res.ok) {
-        window.location.href = "/admin";
+        window.location.href = redirectTo;
         return;
       }
       const j = (await res.json().catch(() => ({}))) as { error?: string };

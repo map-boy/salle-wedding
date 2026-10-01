@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { pairs } from "@/lib/content";
+import { pairs, txt } from "@/lib/content";
 import { readDb } from "@/lib/db";
 
 export async function SiteFooter() {
@@ -13,7 +13,7 @@ export async function SiteFooter() {
           <p className="mt-2 max-w-xs text-sm text-white/60">{s.tagline}</p>
         </div>
         <div className="text-sm">
-          <p className="label">Explore</p>
+          <p className="label text-gold-400!">{txt(s, "footer.exploreTitle")}</p>
           <ul className="space-y-1.5">
             {links.map(([label, href]) => (
               <li key={label + href}><Link href={href} className="transition hover:text-gold-400">{label}</Link></li>
@@ -21,16 +21,16 @@ export async function SiteFooter() {
           </ul>
         </div>
         <div className="text-sm">
-          <p className="label">Contact</p>
-          <ul className="space-y-1.5 text-white/60">
+          <p className="label text-gold-400!">{txt(s, "footer.contactTitle")}</p>
+          <ul className="space-y-1.5 text-white/70">
             <li>{s.contactAddress}</li>
             <li>{s.contactPhone}</li>
             <li>{s.contactEmail}</li>
           </ul>
         </div>
       </div>
-      <div className="border-t border-white/10 py-4 text-center text-xs text-white/50">
-        {s.footerNote} <Link href="/admin" className="ml-2 underline-offset-2 hover:underline">Admin</Link>
+      <div className="border-t border-white/10 py-4 text-center text-xs text-white/60">
+        {s.footerNote} <Link href="/admin" className="ml-2 underline-offset-2 hover:underline">{txt(s, "ui.adminLink")}</Link>
       </div>
     </footer>
   );

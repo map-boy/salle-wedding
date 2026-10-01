@@ -1,13 +1,14 @@
 import type { Listing } from "./types";
 
-export const rwf = (n: number) => `${Math.round(n).toLocaleString("en-US")} RWF`;
+export type PriceOpts = { cur: string; ask: string; from: string };
+export const rwf = (n: number, cur: string) => `${Math.round(n).toLocaleString("en-US")} ${cur}`;
 
-export function priceText(l: Pick<Listing, "priceMin" | "priceMax">) {
+export function priceText(l: Pick<Listing, "priceMin" | "priceMax">, o: PriceOpts) {
   const a = l.priceMin;
   const b = l.priceMax;
-  if (!a && !b) return "Ask for a quote";
-  if (a && b && b > a) return `${rwf(a)} \u2013 ${rwf(b)}`;
-  return `From ${rwf(a || b)}`;
+  if (!a && !b) return o.ask;
+  if (a && b && b > a) return `${rwf(a, o.cur)} \u2013 ${rwf(b, o.cur)}`;
+  return `${o.from} ${rwf(a || b, o.cur)}`;
 }
 
 export const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) ?? "";

@@ -1,6 +1,7 @@
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { WhatsAppButton } from "@/components/whatsapp-button";
+import { txt } from "@/lib/content";
 import { readDb } from "@/lib/db";
 import { DEFAULT_OG, siteUrl } from "@/lib/seo";
 
@@ -17,7 +18,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
     image: image.startsWith("http") ? image : base + image,
     telephone: s.contactPhone || undefined,
     email: s.contactEmail || undefined,
-    address: s.contactAddress ? { "@type": "PostalAddress", addressLocality: s.contactAddress, addressCountry: "RW" } : undefined,
+    address: s.contactAddress ? { "@type": "PostalAddress", addressLocality: s.contactAddress, addressCountry: txt(s, "locale.countryCode") } : undefined,
   };
   const json = JSON.stringify(ld).split("<").join(String.fromCharCode(92) + "u003c");
   return (

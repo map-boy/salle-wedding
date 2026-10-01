@@ -41,7 +41,7 @@ export function ListingForm({ l, db, isNew }: { l: Listing; db: Db; isNew: boole
         <input type="hidden" name="id" value={l.id} />
         <Card title="Basics">
           <F label="Name" name="name" value={l.name} wide />
-          <F label="Owner" name="owner" value={l.owner} />
+          <F label="Owner" name="owner" value={l.owner} /><F label="TIN number" name="tin" value={l.tin} /><F label="Vendor login email (Google)" name="ownerEmail" value={l.ownerEmail} wide />
           <div>
             <label className="label" htmlFor="categorySlug">Category</label>
             <select id="categorySlug" name="categorySlug" defaultValue={l.categorySlug} className="input">

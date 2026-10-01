@@ -17,7 +17,7 @@ export async function SiteHeader() {
   const items = pairs(settings, "menu.items").map(([label, href]) => ({ label, href }));
 
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-white/80 shadow-sm backdrop-blur-md">
+    <header className="sticky top-0 z-30 border-b border-line bg-paper/80 shadow-sm backdrop-blur-md">
       <div className="container-page flex h-16 items-center gap-6">
         <Link href="/" className="font-display text-xl font-semibold text-wine-700"><span aria-hidden className="mr-2 inline-block h-2.5 w-2.5 rounded-full bg-gold-400" />{settings.siteName}</Link>
         <SiteMenu items={items} services={services} />

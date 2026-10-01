@@ -2,6 +2,7 @@ import { promises as fs } from "fs";
 import os from "os";
 import path from "path";
 import { randomUUID } from "crypto";
+import { firestore } from "./admin-sdk";
 
 export type Admin = { email: string; name: string; addedBy: string; createdAt: string };
 
@@ -46,18 +47,33 @@ async function writeRaw(list: Admin[]): Promise<void> {
   }
 }
 
-export const listAdmins = (): Promise<Admin[]> => locked(readRaw);
+export const listAdmins = (): Promise<Admin[]> =>
+  locked(async () => {
+    const f = firestore();
+    if (f) return (await f.collection("admins").get()).docs.map((d) => d.data() as Admin).sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+    return readRaw();
+  });
 
 export const addAdmin = (email: string, name: string, addedBy: string): Promise<void> =>
   locked(async () => {
+    if (email === rootEmail()) return;
+    const f = firestore();
+    if (f) {
+      const ref = f.collection("admins").doc(email);
+      if ((await ref.get()).exists) return;
+      await ref.set({ email, name, addedBy, createdAt: new Date().toISOString() });
+      return;
+    }
     const list = await readRaw();
-    if (email === rootEmail() || list.some((a) => a.email === email)) return;
+    if (list.some((a) => a.email === email)) return;
     list.push({ email, name, addedBy, createdAt: new Date().toISOString() });
     await writeRaw(list);
   });
 
 export const removeAdmin = (email: string): Promise<void> =>
   locked(async () => {
+    const f = firestore();
+    if (f) { await f.collection("admins").doc(email).delete(); return; }
     const list = await readRaw();
     await writeRaw(list.filter((a) => a.email !== email));
   });
@@ -66,5 +82,7 @@ export async function isAllowed(email: string): Promise<boolean> {
   const e = email.trim().toLowerCase();
   if (!e) return false;
   if (e === rootEmail()) return true;
+  const f = firestore();
+  if (f) return (await f.collection("admins").doc(e).get()).exists;
   return (await listAdmins()).some((a) => a.email === e);
 }

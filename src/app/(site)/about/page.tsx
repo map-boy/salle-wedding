@@ -1,14 +1,14 @@
 import Link from "next/link";
-import { pairs, txt } from "@/lib/content";
+import { pairs, ts, txt } from "@/lib/content";
 import { readDb } from "@/lib/db";
 import { digits } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "About",
-  description: "About our wedding venues and vendors marketplace in Rwanda.",
-};
+export async function generateMetadata() {
+  const { settings: s } = await readDb();
+  return { title: ts(s, "seo.about.title"), description: ts(s, "seo.about.desc") };
+}
 
 export default async function AboutPage() {
   const { settings: s } = await readDb();
@@ -16,7 +16,7 @@ export default async function AboutPage() {
   const pillars = pairs(s, "about.pillars");
   return (
     <div className="container-page py-12">
-      <p className="text-sm uppercase tracking-[0.25em] text-gold-500">About</p>
+      <p className="text-sm uppercase tracking-[0.25em] text-gold-500">{txt(s, "about.eyebrow")}</p>
       <h1 className="mt-2 text-3xl font-semibold sm:text-5xl">{s.siteName}</h1>
       <p className="mt-3 text-lg text-wine-700">{s.tagline}</p>
       <p className="mt-6 max-w-3xl whitespace-pre-line text-lg leading-8 text-ink/80">{s.aboutText}</p>
@@ -37,11 +37,11 @@ export default async function AboutPage() {
           {s.contactPhone && <li><a href={"tel:" + s.contactPhone} className="hover:text-wine-600">{s.contactPhone}</a></li>}
           {s.contactEmail && <li><a href={"mailto:" + s.contactEmail} className="hover:text-wine-600">{s.contactEmail}</a></li>}
           {s.contactAddress && <li>{s.contactAddress}</li>}
-          {wa && <li><a href={"https://wa.me/" + wa} target="_blank" rel="noopener noreferrer" className="text-ok hover:underline">Chat on WhatsApp</a></li>}
+          {wa && <li><a href={"https://wa.me/" + wa} target="_blank" rel="noopener noreferrer" className="text-ok hover:underline">{txt(s, "ui.chatWhatsapp")}</a></li>}
         </ul>
         <div className="mt-5 flex flex-wrap gap-3">
-          <Link href="/planning" className="btn btn-primary">Start planning</Link>
-          <Link href="/venues" className="btn btn-outline">Browse venues</Link>
+          <Link href="/planning" className="btn btn-primary">{txt(s, "about.ctaPlan")}</Link>
+          <Link href="/venues" className="btn btn-outline">{txt(s, "about.ctaVenues")}</Link>
         </div>
       </div>
     </div>

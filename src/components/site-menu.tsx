@@ -40,7 +40,7 @@ export function SiteMenu({ items, services }: { items: Item[]; services: Svc[] }
     <details ref={ref} className="relative ml-auto" onMouseEnter={cancel} onMouseLeave={scheduleClose}>
       <summary aria-label="Menu" className="btn btn-outline list-none px-4 text-xl leading-none">{"\u2261"}</summary>
       <div
-        className="absolute right-0 mt-2 max-h-[80vh] w-72 overflow-y-auto rounded-xl border border-line bg-white p-2 shadow-lg"
+        className="absolute right-0 mt-2 max-h-[80vh] w-72 overflow-y-auto rounded-xl border border-line bg-paper p-2 shadow-lg"
         onClick={(e) => { if ((e.target as HTMLElement).closest("a")) close(); }}
       >
         {items.map((it) => it.href === "services" ? (

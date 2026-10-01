@@ -67,7 +67,7 @@ export default async function AdminCategories(props: PageProps<"/admin/categorie
                 </select>
                 <select name="kind" defaultValue={c.kind} className="input"><option value="venue">venue</option><option value="vendor">vendor</option></select>
                 <input name="order" type="number" defaultValue={c.order} className="input" />
-                <input name="emoji" defaultValue={c.emoji ?? ""} placeholder="Emoji" className="input" />
+                <input name="emoji" defaultValue={c.emoji ?? ""} placeholder="Emoji" className="input" /><input name="icon" defaultValue={c.icon ?? ""} placeholder="Icon image URL or /icons/x.png (optional)" className="input md:col-span-2" />
                 <label className="flex items-center gap-2 text-sm md:col-span-2"><input type="checkbox" name="hidePrice" defaultChecked={!!c.hidePrice} />Hide prices</label>
                 <input name="description" defaultValue={c.description} className="input md:col-span-3" />
                 <button className="btn btn-outline btn-sm" type="submit">Save ({used(c.slug)} listings)</button>
@@ -85,7 +85,7 @@ export default async function AdminCategories(props: PageProps<"/admin/categorie
             <select name="groupId" className="input">{groups.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}</select>
             <select name="kind" defaultValue="vendor" className="input"><option value="venue">venue</option><option value="vendor">vendor</option></select>
             <input name="order" type="number" defaultValue={cats.length} className="input" />
-            <input name="emoji" placeholder="Emoji" className="input" />
+            <input name="emoji" placeholder="Emoji" className="input" /><input name="icon" placeholder="Icon image URL or /icons/x.png (optional)" className="input md:col-span-2" />
             <label className="flex items-center gap-2 text-sm md:col-span-2"><input type="checkbox" name="hidePrice" />Hide prices</label>
             <input name="description" placeholder="Description" className="input md:col-span-3" />
             <button className="btn btn-primary btn-sm" type="submit">Add category</button>

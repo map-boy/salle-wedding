@@ -2,16 +2,16 @@ import Link from "next/link";
 import { Banner } from "@/components/ui";
 import { submitAppointment } from "@/lib/actions/appointments";
 import { SLOTS, isBookable, takenSlots, todayKigali } from "@/lib/appointments";
-import { txt } from "@/lib/content";
+import { ts, txt } from "@/lib/content";
 import { readDb } from "@/lib/db";
 import { first, fmtDate } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "Plan your wedding",
-  description: "Schedule an appointment with the wedding planner and start planning your wedding.",
-};
+export async function generateMetadata() {
+  const { settings: s } = await readDb();
+  return { title: ts(s, "seo.planning.title"), description: ts(s, "seo.planning.desc") };
+}
 
 const DOW = ["M", "T", "W", "T", "F", "S", "S"];
 
@@ -47,15 +47,15 @@ export default async function PlanningPage(props: { searchParams: Promise<Record
 
   return (
     <div className="container-page py-12">
-      <p className="text-sm uppercase tracking-[0.25em] text-gold-500">Start planning</p>
+      <p className="text-sm uppercase tracking-[0.25em] text-gold-500">{txt(db.settings, "planning.eyebrow")}</p>
       <h1 className="mt-2 text-3xl font-semibold sm:text-5xl">{txt(db.settings, "planning.title")}</h1>
       <p className="mt-3 max-w-2xl text-lg text-muted">{txt(db.settings, "planning.intro")}</p>
 
       <div className="mt-6">
-        {sent && <Banner>Thank you. Your appointment request was sent and we will contact you soon to confirm.</Banner>}
-        {error === "missing" && <Banner tone="bad">Please choose a time and enter your name and phone number.</Banner>}
-        {error === "taken" && <Banner tone="bad">That time was just taken. Please choose another one.</Banner>}
-        {error === "invalid" && <Banner tone="bad">Please choose an available date.</Banner>}
+        {sent && <Banner>{txt(db.settings, "planning.sent")}</Banner>}
+        {error === "missing" && <Banner tone="bad">{txt(db.settings, "planning.errMissing")}</Banner>}
+        {error === "taken" && <Banner tone="bad">{txt(db.settings, "planning.errTaken")}</Banner>}
+        {error === "invalid" && <Banner tone="bad">{txt(db.settings, "planning.errInvalid")}</Banner>}
       </div>
 
       <div className="mt-4 grid gap-8 lg:grid-cols-2">
@@ -85,9 +85,9 @@ export default async function PlanningPage(props: { searchParams: Promise<Record
             })}
           </div>
           <div className="mt-5 flex flex-wrap gap-4 text-xs text-muted">
-            <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded bg-green-100" /> Available</span>
-            <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded bg-neutral-200" /> Fully booked</span>
-            <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded bg-zinc-200" /> Not available</span>
+            <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded bg-green-100" /> {txt(db.settings, "planning.legendAvailable")}</span>
+            <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded bg-neutral-200" /> {txt(db.settings, "planning.legendBooked")}</span>
+            <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded bg-zinc-200" /> {txt(db.settings, "planning.legendNA")}</span>
           </div>
         </section>
 
@@ -97,7 +97,7 @@ export default async function PlanningPage(props: { searchParams: Promise<Record
               <input type="hidden" name="date" value={date} />
               <h2 className="text-xl font-semibold">{fmtDate(date)}</h2>
               <div>
-                <p className="label">Choose a time</p>
+                <p className="label">{txt(db.settings, "planning.chooseTime")}</p>
                 <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
                   {slots.map((t) => taken.has(`${date}|${t}`) ? (
                     <span key={t} className="rounded-xl border border-line bg-neutral-100 px-3 py-2 text-center text-sm text-neutral-700 line-through">{t}</span>
@@ -109,18 +109,18 @@ export default async function PlanningPage(props: { searchParams: Promise<Record
                   ))}
                 </div>
               </div>
-              <input name="name" required placeholder="Your name" className="input" />
-              <input name="phone" required placeholder="Phone / WhatsApp" className="input" />
-              <input name="email" type="email" placeholder="Email (optional)" className="input" />
+              <input name="name" required placeholder={txt(db.settings, "form.phName")} className="input" />
+              <input name="phone" required placeholder={txt(db.settings, "form.phPhone")} className="input" />
+              <input name="email" type="email" placeholder={txt(db.settings, "form.phEmail")} className="input" />
               <div>
-                <label className="label" htmlFor="eventDate">Wedding date (optional)</label>
+                <label className="label" htmlFor="eventDate">{txt(db.settings, "planning.weddingDate")}</label>
                 <input id="eventDate" name="eventDate" type="date" className="input" />
               </div>
-              <textarea name="message" rows={3} placeholder="Tell us about your wedding" className="input" />
+              <textarea name="message" rows={3} placeholder={txt(db.settings, "planning.phMessage")} className="input" />
               <button type="submit" className="btn btn-primary w-full">{txt(db.settings, "planning.submit")}</button>
             </form>
           ) : (
-            <div className="flex h-full min-h-48 items-center justify-center text-center text-muted">Pick an available day in the calendar to see the times.</div>
+            <div className="flex h-full min-h-48 items-center justify-center text-center text-muted">{txt(db.settings, "planning.pickDay")}</div>
           )}
         </section>
       </div>

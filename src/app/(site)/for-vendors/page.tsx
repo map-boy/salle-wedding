@@ -1,14 +1,14 @@
 import Link from "next/link";
-import { list, pairs, txt } from "@/lib/content";
+import { list, pairs, ts, txt } from "@/lib/content";
 import { readDb } from "@/lib/db";
 import { rwf } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "For vendors",
-  description: "Join Wacu Events as a vendor. Free and Premium plans for Rwandan wedding businesses.",
-};
+export async function generateMetadata() {
+  const { settings: s } = await readDb();
+  return { title: ts(s, "seo.forVendors.title"), description: ts(s, "seo.forVendors.desc") };
+}
 
 export default async function ForVendorsPage() {
   const { settings: s } = await readDb();
@@ -36,10 +36,10 @@ export default async function ForVendorsPage() {
           <div key={p.id} className={p.id === "premium" ? "card border-wine-500 p-6 ring-2 ring-wine-100" : "card p-6"}>
             <h2 className="text-2xl font-semibold">{p.name}</h2>
             <p className="mt-2 text-3xl font-semibold text-wine-700">
-              {rwf(p.price)}
+              {rwf(p.price, txt(s, "locale.currency"))}
               {p.period && <span className="text-base font-normal text-muted">{" / " + p.period}</span>}
             </p>
-            <p className="mt-1 text-sm text-muted">{p.commission + "% commission on Wacu-attributed transactions"}</p>
+            <p className="mt-1 text-sm text-muted">{ts(s, "plan.commissionLine", { commission: p.commission })}</p>
             <ul className="mt-5 space-y-2 text-sm">
               {p.features.map((x) => (
                 <li key={x} className="flex gap-2"><span className="text-ok">{"\u2713"}</span><span>{x}</span></li>

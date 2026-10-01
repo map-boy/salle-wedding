@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { categoryOf, hrefOf, kindOf, ratingOf } from "@/lib/db";
+import { priceOpts, ts, txt } from "@/lib/content";
 import { catEmoji } from "@/lib/emoji";
 import { priceText } from "@/lib/format";
 import { isPremium } from "@/lib/plans";
@@ -8,7 +9,7 @@ import { ProgressiveItems } from "./progressive-grid";
 import { Badge, Empty, Stars } from "./ui";
 
 export function ListingGrid({ db, listings }: { db: Db; listings: Listing[] }) {
-  if (!listings.length) return <Empty>No listings match your search yet. Try clearing a filter.</Empty>;
+  if (!listings.length) return <Empty>{txt(db.settings, "ui.noListings")}</Empty>;
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       <ProgressiveItems batch={3}>{listings.map((l) => {
@@ -27,24 +28,24 @@ export function ListingGrid({ db, listings }: { db: Db; listings: Listing[] }) {
                 <div className="flex h-full items-center justify-center text-6xl">{cat ? catEmoji(cat) : l.name.charAt(0)}</div>
               )}
               <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
-                {l.featured && <Badge tone="gold">Featured</Badge>}
-                {isPremium(l) && <Badge tone="wine">Premium</Badge>}
-                {l.verified && <Badge tone="green">Verified</Badge>}
-                {l.trending && <Badge tone="wine">Trending</Badge>}
+                {l.featured && <Badge tone="gold">{txt(db.settings, "badge.featured")}</Badge>}
+                {isPremium(l) && <Badge tone="wine">{txt(db.settings, "badge.premium")}</Badge>}
+                {l.verified && <Badge tone="green">{txt(db.settings, "badge.verified")}</Badge>}
+                {l.trending && <Badge tone="wine">{txt(db.settings, "badge.trending")}</Badge>}
               </div>
             </div>
             <div className="p-5">
-              <p className="text-xs uppercase tracking-wide text-gold-500">{(cat ? catEmoji(cat) + " " : "") + (cat?.name ?? "Other")}</p>
+              <p className="text-xs uppercase tracking-wide text-gold-500">{(cat ? catEmoji(cat) + " " : "") + (cat?.name ?? txt(db.settings, "listing.catFallback"))}</p>
               <h3 className="mt-1 text-lg font-semibold leading-snug">{l.name}</h3>
               {l.tagline && <p className="mt-1 line-clamp-2 text-sm text-muted">{l.tagline}</p>}
               <div className="mt-4 flex items-center justify-between text-sm">
-                <span className="text-muted">{"\u{1F4CD} " + (l.districts.join(", ") || "Rwanda")}</span>
+                <span className="text-muted">{"\u{1F4CD} " + (l.districts.join(", ") || txt(db.settings, "locale.country"))}</span>
                 <Stars avg={avg} count={count} />
               </div>
               {isVenue && l.venue.maxGuests > 0 && (
-                <p className="mt-2 text-sm text-muted">{"\u{1F465} Up to " + l.venue.maxGuests + " guests"}</p>
+                <p className="mt-2 text-sm text-muted">{"\u{1F465} " + ts(db.settings, "listing.upTo", { n: String(l.venue.maxGuests) })}</p>
               )}
-              {!hidePrice && <p className="mt-3 inline-flex rounded-full bg-gold-100 px-3 py-1 text-sm font-semibold text-wine-900">{priceText(l)}</p>}
+              {!hidePrice && <p className="mt-3 inline-flex rounded-full bg-gold-100 px-3 py-1 text-sm font-semibold text-wine-900">{priceText(l, priceOpts(db.settings))}</p>}
             </div>
           </Link>
         );

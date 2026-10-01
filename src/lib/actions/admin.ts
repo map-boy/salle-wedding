@@ -66,7 +66,7 @@ export async function saveListingAction(fd: FormData): Promise<void> {
       featured: bool(fd, "featured"), verified: bool(fd, "verified"), trending: bool(fd, "trending"),
       plan: str(fd, "plan") === "premium" ? "premium" : "free",
       premiumUntil: /^\d{4}-\d{2}-\d{2}$/.test(str(fd, "premiumUntil")) ? str(fd, "premiumUntil") : "",
-      planRequested: prev?.planRequested ?? "free",
+      planRequested: prev?.planRequested ?? "free", tin: str(fd, "tin"), ownerEmail: str(fd, "ownerEmail").toLowerCase(),
       contact: { phone: str(fd, "phone"), whatsapp: str(fd, "whatsapp"), email: str(fd, "email") },
       social: {
         instagram: str(fd, "instagram"), facebook: str(fd, "facebook"), tiktok: str(fd, "tiktok"),
@@ -160,7 +160,7 @@ export async function saveCategoryAction(fd: FormData): Promise<void> {
   if (db.categories.some((c) => c.slug === slug && c.slug !== original)) redirect("/admin/categories?error=slug");
   const kind: Kind = str(fd, "kind") === "venue" ? "venue" : "vendor";
   await mutate((d) => {
-    const cat: Category = { slug, name, groupId: str(fd, "groupId"), kind, description: str(fd, "description"), order: num(fd, "order"), emoji: str(fd, "emoji"), hidePrice: bool(fd, "hidePrice") };
+    const cat: Category = { slug, name, groupId: str(fd, "groupId"), kind, description: str(fd, "description"), order: num(fd, "order"), emoji: str(fd, "emoji"), icon: str(fd, "icon"), hidePrice: bool(fd, "hidePrice") };
     const i = d.categories.findIndex((c) => c.slug === original);
     if (i >= 0) {
       d.categories[i] = cat;

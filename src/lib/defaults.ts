@@ -9,7 +9,7 @@ export const emptyListing = (categorySlug = ""): Listing => ({
   id: "", name: "", categorySlug, owner: "", tagline: "", description: "",
   districts: [], address: "", priceMin: 0, priceMax: 0,
   status: "pending", featured: false, verified: false, trending: false,
-  plan: "free", premiumUntil: "", planRequested: "free",
+  plan: "free", premiumUntil: "", planRequested: "free", tin: "", ownerEmail: "",
   contact: { phone: "", whatsapp: "", email: "" },
   social: { instagram: "", facebook: "", tiktok: "", youtube: "", website: "" },
   photos: [], videos: [], packages: [], bookedDates: [], venue: emptyVenue(),

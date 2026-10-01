@@ -1,14 +1,15 @@
 import { BrowseFilters } from "@/components/browse-filters";
 import { ListingGrid } from "@/components/listing-cards";
+import { ts, txt } from "@/lib/content";
 import { readDb, searchListings } from "@/lib/db";
 import { first } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "Wedding venues in Rwanda",
-  description: "Browse and compare wedding venues in Rwanda by district, capacity and price.",
-};
+export async function generateMetadata() {
+  const { settings: s } = await readDb();
+  return { title: ts(s, "seo.venues.title"), description: ts(s, "seo.venues.desc") };
+}
 
 export default async function VenuesPage(props: PageProps<"/venues">) {
   const sp = await props.searchParams;
@@ -20,8 +21,8 @@ export default async function VenuesPage(props: PageProps<"/venues">) {
   });
   return (
     <div className="container-page py-10">
-      <h1 className="text-3xl font-semibold sm:text-4xl">{"🏛️ "}Wedding venues</h1>
-      <p className="mt-2 text-muted">{list.length} venue{list.length === 1 ? "" : "s"} found</p>
+      <h1 className="text-3xl font-semibold sm:text-4xl">{"🏛️ "}{txt(db.settings, "browse.venuesTitle")}</h1>
+      <p className="mt-2 text-muted">{ts(db.settings, list.length === 1 ? "browse.venueOne" : "browse.venueMany", { n: String(list.length) })}</p>
       <div className="mt-6">
         <BrowseFilters
           action="/venues" districts={db.settings.districts} values={values} showGuests

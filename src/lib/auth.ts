@@ -74,3 +74,40 @@ export async function isAdmin(): Promise<boolean> {
 export async function requireAdmin(): Promise<void> {
   if (!(await isAdmin())) redirect("/admin/login");
 }
+// ---------- vendor session (separate cookie from admin) ----------
+const VCOOKIE = "salle_vendor";
+
+export async function startVendorSession(email: string): Promise<void> {
+  const exp = String(Date.now() + DAYS * 86400000);
+  const body = `${exp}.${enc(email.toLowerCase())}`;
+  const jar = await cookies();
+  jar.set(VCOOKIE, `${body}.${sign(body)}`, {
+    httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: DAYS * 86400,
+  });
+}
+
+export async function endVendorSession(): Promise<void> {
+  const jar = await cookies();
+  jar.delete(VCOOKIE);
+}
+
+export async function getVendorEmail(): Promise<string | null> {
+  if (!secret()) return null;
+  const jar = await cookies();
+  const token = jar.get(VCOOKIE)?.value;
+  if (!token) return null;
+  const parts = token.split(".");
+  if (parts.length !== 3) return null;
+  const [exp, e, sig] = parts;
+  const good = sign(`${exp}.${e}`);
+  if (sig.length !== good.length) return null;
+  if (!timingSafeEqual(Buffer.from(sig), Buffer.from(good))) return null;
+  if (!(Number(exp) > Date.now())) return null;
+  return dec(e);
+}
+
+export async function requireVendor(): Promise<string> {
+  const e = await getVendorEmail();
+  if (!e) redirect("/vendor/login");
+  return e;
+}

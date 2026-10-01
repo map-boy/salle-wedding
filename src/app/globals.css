@@ -1,24 +1,25 @@
 @import "tailwindcss";
 
 @theme static {
-  --color-cream-50: #fafafa;
-  --color-cream-100: #f5f5f5;
-  --color-cream-200: #e5e5e5;
-  --color-ink: #171717;
-  --color-muted: #737373;
-  --color-line: #e5e5e5;
-  --color-wine-50: #f5f5f5;
-  --color-wine-100: #e5e5e5;
-  --color-wine-500: #737373;
-  --color-wine-600: #525252;
-  --color-wine-700: #404040;
-  --color-wine-900: #171717;
-  --color-gold-100: #f5f5f5;
-  --color-gold-400: #d4d4d4;
-  --color-gold-500: #a3a3a3;
+  --color-paper: #d7b695;
+  --color-cream-50: #d7b695;
+  --color-cream-100: #cfab86;
+  --color-cream-200: #c49f79;
+  --color-ink: #0d080b;
+  --color-muted: #2f2217;
+  --color-line: #a9835a;
+  --color-wine-50: #fbf1f4;
+  --color-wine-100: #f6dde5;
+  --color-wine-500: #a93758;
+  --color-wine-600: #8b2346;
+  --color-wine-700: #701c39;
+  --color-wine-900: #3d0f20;
+  --color-gold-100: #f5ecd9;
+  --color-gold-400: #d0a95c;
+  --color-gold-500: #a97f33;
   --color-ok: #1f7a4d;
-  --color-warn: #737373;
-  --color-bad: #525252;
+  --color-warn: #a86a12;
+  --color-bad: #b3261e;
 }
 
 @theme inline {
@@ -44,11 +45,11 @@ h1, h2, h3 {
   .container-page { @apply mx-auto w-full max-w-6xl px-5 sm:px-8; }
   .btn { @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition; }
   .btn-primary { @apply bg-wine-600 text-white hover:bg-wine-700; }
-  .btn-outline { @apply border border-line bg-white text-ink hover:border-wine-500 hover:text-wine-600; }
-  .btn-danger { @apply border border-bad/30 bg-white text-bad hover:bg-bad hover:text-white; }
+  .btn-outline { @apply border border-line bg-paper text-ink hover:border-wine-500 hover:text-wine-600; }
+  .btn-danger { @apply border border-bad/30 bg-paper text-bad hover:bg-bad hover:text-white; }
   .btn-sm { @apply px-3 py-1.5 text-xs; }
-  .card { @apply rounded-2xl border border-line bg-white shadow-sm; }
-  .input { @apply w-full rounded-xl border border-line bg-white px-3.5 py-2.5 text-sm outline-none transition focus:border-gold-400 focus:ring-2 focus:ring-gold-100; }
+  .card { @apply rounded-2xl border border-line bg-paper shadow-sm; }
+  .input { @apply w-full rounded-xl border border-line bg-paper px-3.5 py-2.5 text-sm outline-none transition focus:border-wine-500 focus:ring-2 focus:ring-wine-100; }
   .label { @apply mb-1 block text-xs font-medium uppercase tracking-wide text-muted; }
   .badge { @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium; }
   .th { @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-muted; }
@@ -80,5 +81,3 @@ h1, h2, h3 {
 .btn-accent { background: #e8a5a5 !important; color: #171717 !important; }
 .btn-accent:hover { background: #d98f8f !important; }
 
-.btn-primary { background: #e8a5a5 !important; color: #171717 !important; }
-.btn-primary:hover { background: #d98f8f !important; }
