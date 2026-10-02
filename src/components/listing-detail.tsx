@@ -125,7 +125,7 @@ export function ListingDetail({
           {l.videos.length > 0 && (
             <Block title={txt(st, "listing.videos")}>
               <ul className="space-y-1 text-sm">
-                {l.videos.map((u) => <li key={u}><a href={u} target="_blank" rel="noopener noreferrer" className="text-wine-600 underline-offset-2 hover:underline">{u}</a></li>)}
+                {l.videos.map((u) => <li key={u}>{/\.(mp4|webm|mov)(\?|$)/i.test(u) ? <video src={u} controls preload="metadata" className="w-full max-w-2xl rounded-xl" /> : <a href={u} target="_blank" rel="noopener noreferrer" className="text-wine-600 underline-offset-2 hover:underline">{u}</a>}</li>)}
               </ul>
             </Block>
           )}

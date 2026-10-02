@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { startVendorSession, verifyGoogleIdToken } from "@/lib/auth";
 import { readDb } from "@/lib/db";
+import { hasVendorAccount } from "@/lib/vendors";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +16,7 @@ export async function POST(req: Request) {
   const who = idToken ? await verifyGoogleIdToken(idToken) : null;
   if (!who) return NextResponse.json({ error: "Could not verify your Google sign-in." }, { status: 401 });
   const db = await readDb();
-  if (!db.listings.some((l) => (l.ownerEmail || "").toLowerCase() === who.email)) {
+  if (!db.listings.some((l) => (l.ownerEmail || "").toLowerCase() === who.email) && !(await hasVendorAccount(who.email))) {
     return NextResponse.json({ error: `${who.email} has no vendor listing. Apply at /join with this Google email, or ask the admin to link it.` }, { status: 403 });
   }
   await startVendorSession(who.email);

@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { logoutAction } from "@/lib/actions/admin";
 import { requireAdmin } from "@/lib/auth";
+import { PushToggle } from "@/components/push-toggle";
 
 const nav = [
-  ["/admin", "Overview"], ["/admin/listings", "Listings"], ["/admin/categories", "Categories"],
-  ["/admin/reviews", "Reviews"], ["/admin/inquiries", "Inquiries"], ["/admin/settings", "Settings"], ["/admin/content", "Page text"], ["/admin/data", "Raw data"], ["/admin/admins", "Admins"],
+  ["/admin", "Overview"], ["/admin/applications", "Applications"], ["/admin/vendors", "Vendors"], ["/admin/listings", "Listings and media"], ["/admin/categories", "Categories"],
+  ["/admin/reviews", "Reviews"], ["/admin/inquiries", "Inquiries"], ["/admin/settings", "Settings"], ["/admin/content", "Page text"], ["/admin/media", "Media"], ["/admin/data", "Raw data"], ["/admin/admins", "Admins"],
 ];
 
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {
@@ -21,6 +22,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             <Link key={href} href={href} className="block whitespace-nowrap rounded-lg px-3 py-2 text-sm text-muted hover:bg-wine-50 hover:text-wine-700">{label}</Link>
           ))}
         </nav>
+        <div className="px-4 pt-3"><PushToggle /></div>
         <form action={logoutAction} className="hidden px-4 py-4 md:block"><button className="btn btn-outline btn-sm w-full" type="submit">Sign out</button></form>
       </aside>
       <div className="min-w-0 flex-1 bg-cream-50 p-5 sm:p-8">{children}</div>

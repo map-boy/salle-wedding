@@ -51,3 +51,6 @@ next-env.d.ts
 
 # local backups
 .backup-*/
+
+# added 2026-10-02
+.env*.local

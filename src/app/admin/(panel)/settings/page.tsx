@@ -1,4 +1,5 @@
 import { Banner } from "@/components/ui";
+import { ImageInput } from "@/components/image-input";
 import { saveSettingsAction } from "@/lib/actions/admin";
 import { readDb } from "@/lib/db";
 import { first } from "@/lib/format";
@@ -37,8 +38,8 @@ export default async function AdminSettings(props: PageProps<"/admin/settings">)
         <F label="Tagline" name="tagline" value={s.tagline} />
         <F label="Hero title" name="heroTitle" value={s.heroTitle} />
         <F label="Hero subtitle" name="heroSubtitle" value={s.heroSubtitle} />
-        <F label="Hero background image" name="heroImage" value={s.heroImage} hint="Path in the public folder (for example /hero/hero-1.jpg) or a full https image URL." />
-        <F label="Link preview image (WhatsApp / Google / social)" name="seoImage" value={s.seoImage} hint="Best: landscape 1200x630, under 300 KB. Path like /hero/SEO.jpg or a full https URL." />
+        <ImageInput label="Hero background image" name="heroImage" defaultValue={s.heroImage} hint="Upload, or paste a path like /hero/hero-1.jpg or a full https URL." />
+        <ImageInput label="Link preview image (WhatsApp / Google / social)" name="seoImage" defaultValue={s.seoImage} hint="Best: landscape 1200x630. Upload, or paste a path/URL." />
         <div className="sm:col-span-2"><T label="SEO description" name="seoDescription" value={s.seoDescription} rows={3} hint="Shown under the title in Google and in link previews. About 150 characters." /></div>
         <F label="Website address" name="siteUrl" value={s.siteUrl} hint="For example https://yourdomain.com. Needed so preview images use the right address. Leave empty to use the Vercel address." />
         <F label="WhatsApp number" name="whatsapp" value={s.whatsapp} hint="Used by the floating WhatsApp button. Example +250781466135" />

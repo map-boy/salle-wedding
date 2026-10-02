@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ConfirmButton } from "@/components/confirm-button";
+import { MediaField } from "@/components/media-field";
 import { Banner, StatusBadge } from "@/components/ui";
 import { deleteVendorListingAction, saveVendorListingAction } from "@/lib/actions/vendor";
 import { requireVendor } from "@/lib/auth";
@@ -98,8 +99,7 @@ export default async function VendorEdit(props: {
         </Card>
 
         <Card title="Photos, packages & availability">
-          <T label="Photos" name="photos" rows={5} value={l.photos.map((p) => `${p.label} | ${p.url}`).join("\n")} hint="One per line: Label | image URL. Delete a line to remove a photo." />
-          <T label="Videos" name="videos" rows={3} value={l.videos.join("\n")} hint="One video URL per line" />
+          <MediaField photos={l.photos} videos={l.videos} />
           <T label="Packages" name="packages" rows={5} value={l.packages.map((p) => `${p.name} | ${p.price} | ${p.description}`).join("\n")} hint="One per line: Name | price | description" />
           <T label="Booked dates" name="bookedDates" rows={3} value={l.bookedDates.join("\n")} hint="YYYY-MM-DD, one per line" />
         </Card>

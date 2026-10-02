@@ -1,4 +1,5 @@
 import { ConfirmButton } from "@/components/confirm-button";
+import { MediaField } from "@/components/media-field";
 import { deleteListingAction, saveListingAction } from "@/lib/actions/admin";
 import type { Db, Listing } from "@/lib/types";
 
@@ -103,7 +104,7 @@ export function ListingForm({ l, db, isNew }: { l: Listing; db: Db; isNew: boole
         </Card>
 
         <Card title="Media, packages & availability">
-          <T label="Photos" name="photos" rows={5} value={l.photos.map((p) => `${p.label} | ${p.url}`).join("\n")} hint="One per line: Label | image URL" />
+          <MediaField photos={l.photos} videos={l.videos} />
           <T label="Videos" name="videos" rows={3} value={l.videos.join("\n")} hint="One video URL per line" />
           <T label="Packages" name="packages" rows={5} value={l.packages.map((p) => `${p.name} | ${p.price} | ${p.description}`).join("\n")} hint="One per line: Name | price | description" />
           <T label="Booked dates" name="bookedDates" rows={3} value={l.bookedDates.join("\n")} hint="YYYY-MM-DD, one per line or comma separated" />

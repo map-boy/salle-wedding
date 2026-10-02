@@ -81,3 +81,12 @@ h1, h2, h3 {
 .btn-accent { background: #e8a5a5 !important; color: #171717 !important; }
 .btn-accent:hover { background: #d98f8f !important; }
 
+
+/* ---- grid / list views (admin) ---- */
+html:not([data-view="list"]) .only-list { display: none; }
+html[data-view="list"] .only-grid { display: none; }
+html:not([data-view="list"]) .view-host { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr)); gap: 1rem; align-items: start; }
+html:not([data-view="list"]) .view-host.view-wide { grid-template-columns: repeat(auto-fill, minmax(min(100%, 38rem), 1fr)); }
+html:not([data-view="list"]) .view-host > * { margin: 0; }
+html:not([data-view="list"]) .view-host.divide-y { border: 0; background: transparent; box-shadow: none; }
+html:not([data-view="list"]) .view-host.divide-y > * { border: 1px solid var(--color-line, #e5e5e5); border-radius: 1rem; background: var(--color-paper, #fff); }

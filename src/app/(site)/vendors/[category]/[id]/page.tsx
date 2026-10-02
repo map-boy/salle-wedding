@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ListingDetail } from "@/components/listing-detail";
+import { ViewTracker } from "@/components/view-tracker";
 import { kindOf, readDb } from "@/lib/db";
 import { first } from "@/lib/format";
 import { listingMetadata } from "@/lib/seo";
@@ -21,5 +22,5 @@ export default async function VendorPage(props: PageProps<"/vendors/[category]/[
   const db = await readDb();
   const l = db.listings.find((x) => x.id === id);
   if (!l || l.status !== "approved" || l.categorySlug !== category || kindOf(db, l) !== "vendor") notFound();
-  return <ListingDetail db={db} l={l} back={"/vendors/" + category + "/" + l.id} sent={first(sp.sent) === "1"} error={first(sp.error)} />;
+  return <><ViewTracker id={l.id} /><ListingDetail db={db} l={l} back={"/vendors/" + category + "/" + l.id} sent={first(sp.sent) === "1"} error={first(sp.error)} /></>;
 }

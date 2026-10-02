@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { emptyListing } from "../defaults";
 import { mutate, newId, readDb } from "../db";
+import { notifyAdmins } from "../push";
 
 const str = (fd: FormData, k: string) => String(fd.get(k) ?? "").trim();
 const safeBack = (b: string) => (b.startsWith("/") && !b.startsWith("//") ? b : "/");
@@ -47,5 +48,6 @@ export async function submitVendorApplication(fd: FormData): Promise<void> {
       status: "pending", planRequested, createdAt: now, updatedAt: now,
     });
   });
+  await notifyAdmins("New vendor application", name + " applied for the " + planRequested + " plan", "/admin/applications");
   redirect("/join?sent=1");
 }

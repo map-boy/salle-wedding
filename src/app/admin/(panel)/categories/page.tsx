@@ -1,10 +1,12 @@
 import { ConfirmButton } from "@/components/confirm-button";
 import { Banner } from "@/components/ui";
+import { ImageInput } from "@/components/image-input";
 import {
   deleteCategoryAction, deleteGroupAction, saveCategoryAction, saveGroupAction,
 } from "@/lib/actions/admin";
 import { readDb } from "@/lib/db";
 import { first } from "@/lib/format";
+import { PageViewToggle } from "@/components/view-toggle";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +26,7 @@ export default async function AdminCategories(props: PageProps<"/admin/categorie
 
   return (
     <div className="space-y-10">
-      <h1 className="text-3xl font-semibold">Categories</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3"><h1 className="text-3xl font-semibold">Categories</h1><PageViewToggle /></div>
       {first(sp.saved) === "1" && <Banner>Saved.</Banner>}
       {err && <Banner tone="bad">{errors[err] ?? "Something went wrong."}</Banner>}
 
@@ -55,7 +57,7 @@ export default async function AdminCategories(props: PageProps<"/admin/categorie
 
       <section>
         <h2 className="mb-3 text-xl font-semibold">Categories</h2>
-        <div className="card divide-y divide-line">
+        <div className="card divide-y divide-line view-host view-wide">
           {cats.map((c) => (
             <div key={c.slug} className="p-4">
               <form action={saveCategoryAction} className="grid gap-2 md:grid-cols-6">
@@ -67,7 +69,7 @@ export default async function AdminCategories(props: PageProps<"/admin/categorie
                 </select>
                 <select name="kind" defaultValue={c.kind} className="input"><option value="venue">venue</option><option value="vendor">vendor</option></select>
                 <input name="order" type="number" defaultValue={c.order} className="input" />
-                <input name="emoji" defaultValue={c.emoji ?? ""} placeholder="Emoji" className="input" /><input name="icon" defaultValue={c.icon ?? ""} placeholder="Icon image URL or /icons/x.png (optional)" className="input md:col-span-2" />
+                <input name="emoji" defaultValue={c.emoji ?? ""} placeholder="Emoji" className="input" /><ImageInput name="icon" defaultValue={c.icon ?? ""} className="md:col-span-2" />
                 <label className="flex items-center gap-2 text-sm md:col-span-2"><input type="checkbox" name="hidePrice" defaultChecked={!!c.hidePrice} />Hide prices</label>
                 <input name="description" defaultValue={c.description} className="input md:col-span-3" />
                 <button className="btn btn-outline btn-sm" type="submit">Save ({used(c.slug)} listings)</button>

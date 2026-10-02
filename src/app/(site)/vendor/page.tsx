@@ -5,6 +5,7 @@ import { deleteVendorListingAction, setVendorInquiryStatusAction, vendorLogoutAc
 import { requireVendor } from "@/lib/auth";
 import { categoryOf, hrefOf, readDb } from "@/lib/db";
 import { first, fmtDate } from "@/lib/format";
+import { getViews } from "@/lib/views";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Vendor panel" };
@@ -18,6 +19,7 @@ export default async function VendorPanel(props: { searchParams: Promise<Record<
   const ids = new Set(mine.map((l) => l.id));
   const inq = db.inquiries.filter((q) => ids.has(q.listingId));
   const nameOf = (id: string) => mine.find((l) => l.id === id)?.name ?? "";
+  const views = await getViews(mine.map((l) => l.id));
 
   return (
     <div className="container-page py-10">
@@ -33,6 +35,11 @@ export default async function VendorPanel(props: { searchParams: Promise<Record<
         {first(sp.removed) === "1" && <Banner>Listing removed.</Banner>}
       </div>
 
+      <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {[["Listings", mine.length], ["Total views", mine.reduce((a, l) => a + (views[l.id]?.total ?? 0), 0)], ["Views, last 7 days", mine.reduce((a, l) => a + (views[l.id]?.week ?? 0), 0)], ["Requests", inq.length]].map(([k, v]) => (
+          <div key={String(k)} className="card p-5"><p className="text-3xl font-semibold text-wine-700">{v}</p><p className="mt-1 text-xs uppercase tracking-wide text-muted">{k}</p></div>
+        ))}
+      </div>
       <h2 className="mt-4 text-xl font-semibold">Your listings</h2>
       <div className="mt-3 grid gap-4 md:grid-cols-2">
         {mine.map((l) => (
@@ -45,6 +52,7 @@ export default async function VendorPanel(props: { searchParams: Promise<Record<
               <StatusBadge status={l.status} />
             </div>
             {l.status !== "approved" && <p className="mt-2 text-xs text-muted">Visible on the site only after the admin approves it.</p>}
+            <p className="mt-3 text-sm text-muted"><span className="font-semibold text-ink">{views[l.id]?.total ?? 0}</span> views - {views[l.id]?.week ?? 0} in the last 7 days - {views[l.id]?.today ?? 0} today - {inq.filter((q) => q.listingId === l.id).length} requests</p>
             <div className="mt-4 flex flex-wrap gap-2">
               <Link href={`/vendor/${l.id}`} className="btn btn-primary btn-sm">Edit</Link>
               {l.status === "approved" && <Link href={hrefOf(db, l)} className="btn btn-outline btn-sm">View public page</Link>}

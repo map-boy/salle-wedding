@@ -3,6 +3,7 @@ import { Banner } from "@/components/ui";
 import { deleteInquiryAction, saveInquiryAction, setInquiryStatusAction } from "@/lib/actions/admin";
 import { readDb } from "@/lib/db";
 import { first, fmtDate } from "@/lib/format";
+import { PageViewToggle } from "@/components/view-toggle";
 import type { Inquiry, Listing } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -43,7 +44,7 @@ export default async function AdminInquiries(props: { searchParams: Promise<Reco
   const name = (id: string) => db.listings.find((l) => l.id === id)?.name ?? "(no listing)";
   return (
     <div>
-      <h1 className="text-3xl font-semibold">Inquiries</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3"><h1 className="text-3xl font-semibold">Inquiries</h1><PageViewToggle /></div>
       <div className="mt-4 space-y-3">
         {first(sp.error) === "name" && <Banner tone="bad">Name is required.</Banner>}
         {first(sp.saved) && <p className="rounded-lg bg-wine-50 px-4 py-2 text-sm text-wine-700">Saved.</p>}
@@ -57,7 +58,7 @@ export default async function AdminInquiries(props: { searchParams: Promise<Reco
         </form>
       </details>
 
-      <div className="mt-6 space-y-4">
+      <div className="mt-6 space-y-4 view-host">
         {db.inquiries.map((q) => (
           <div key={q.id} className="card p-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
