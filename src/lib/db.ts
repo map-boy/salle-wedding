@@ -7,6 +7,8 @@ import { firestore } from "./admin-sdk";
 import { emptyListing, emptyVenue } from "./defaults";
 import { isPremium } from "./plans";
 import { makeSeed } from "./seed";
+import { applyWacu } from "./migrate";
+import { applyDataDefaults } from "./seed-data";
 import type { Category, Db, Kind, Listing } from "./types";
 
 const DIR = process.env.VERCEL ? path.join(os.tmpdir(), "jeph-data") : path.join(process.cwd(), "data");
@@ -29,7 +31,7 @@ export function normalizeDb(raw: Partial<Db>): Db {
         social: { ...e.social, ...(l.social ?? {}) },
         venue: { ...emptyVenue(), ...(l.venue ?? {}) },
         districts: l.districts ?? [], photos: l.photos ?? [], videos: l.videos ?? [],
-        packages: l.packages ?? [], bookedDates: l.bookedDates ?? [],
+        packages: l.packages ?? [], bookedDates: l.bookedDates ?? [], attrs: l.attrs ?? {},
       };
     }),
     reviews: raw.reviews ?? [],
@@ -125,6 +127,15 @@ async function remoteWrite(f: Firestore, prev: Db | null, next: Db): Promise<voi
 
 /* ---------- unified raw layer ---------- */
 async function readRaw(): Promise<Db> {
+  const db = await readRaw0();
+  const before = structuredClone(db);
+  const a = applyWacu(db);
+  const b = applyDataDefaults(db);
+  if (a || b) await writeRaw(db, before);
+  return db;
+}
+
+async function readRaw0(): Promise<Db> {
   const f = firestore();
   if (f) {
     const got = await remoteRead(f);

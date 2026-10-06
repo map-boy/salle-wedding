@@ -1,16 +1,22 @@
-﻿import type { Inquiry } from "./types";
+import type { Inquiry, Settings } from "./types";
 
-export const SLOTS = ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00"];
+export type BookRules = { offsetHours: number; daysAhead: number; closed: number[] };
 
-const KIGALI_MS = 2 * 3600 * 1000;
-export const todayKigali = () => new Date(Date.now() + KIGALI_MS).toISOString().slice(0, 10);
-const limitDate = () => new Date(Date.now() + KIGALI_MS + 200 * 86400000).toISOString().slice(0, 10);
+export const rulesOf = (s: Pick<Settings, "timezoneOffset" | "appointmentDaysAhead" | "appointmentClosedDays">): BookRules => ({
+  offsetHours: s.timezoneOffset ?? 0,
+  daysAhead: s.appointmentDaysAhead ?? 0,
+  closed: String(s.appointmentClosedDays ?? "").split(/[,\s]+/).filter(Boolean).map(Number).filter((n) => n >= 0 && n <= 6),
+});
+
+const ms = (h: number) => h * 3600 * 1000;
+export const todayKigali = (offsetHours = 0) => new Date(Date.now() + ms(offsetHours)).toISOString().slice(0, 10);
+const limitDate = (r: BookRules) => new Date(Date.now() + ms(r.offsetHours) + r.daysAhead * 86400000).toISOString().slice(0, 10);
 
 export const isDateStr = (s: string) => /^\d{4}-\d{2}-\d{2}$/.test(s) && !Number.isNaN(Date.parse(`${s}T00:00:00Z`));
 export const weekday = (s: string) => new Date(`${s}T00:00:00Z`).getUTCDay();
 
-export function isBookable(s: string, today: string = todayKigali()): boolean {
-  return isDateStr(s) && s > today && s <= limitDate() && weekday(s) !== 0;
+export function isBookable(s: string, today: string, r: BookRules): boolean {
+  return isDateStr(s) && s > today && s <= limitDate(r) && !r.closed.includes(weekday(s));
 }
 
 const RE = /^Appointment: (\d{4}-\d{2}-\d{2}) (\d{2}:\d{2})/;

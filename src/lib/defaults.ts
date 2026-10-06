@@ -12,7 +12,7 @@ export const emptyListing = (categorySlug = ""): Listing => ({
   plan: "free", premiumUntil: "", planRequested: "free", tin: "", ownerEmail: "",
   contact: { phone: "", whatsapp: "", email: "" },
   social: { instagram: "", facebook: "", tiktok: "", youtube: "", website: "" },
-  photos: [], videos: [], packages: [], bookedDates: [], venue: emptyVenue(),
+  photos: [], videos: [], packages: [], bookedDates: [], venue: emptyVenue(), attrs: {},
   createdAt: "", updatedAt: "",
 });
 

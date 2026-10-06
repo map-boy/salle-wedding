@@ -43,6 +43,13 @@ export default async function AdminSettings(props: PageProps<"/admin/settings">)
         <div className="sm:col-span-2"><T label="SEO description" name="seoDescription" value={s.seoDescription} rows={3} hint="Shown under the title in Google and in link previews. About 150 characters." /></div>
         <F label="Website address" name="siteUrl" value={s.siteUrl} hint="For example https://yourdomain.com. Needed so preview images use the right address. Leave empty to use the Vercel address." />
         <F label="WhatsApp number" name="whatsapp" value={s.whatsapp} hint="Used by the floating WhatsApp button. Example +250781466135" />
+<F label="Date language code" name="dateLocale" value={s.dateLocale ?? ""} hint="Example en-GB, fr-FR. Used for dates and calendars." />
+<F label="Number format code" name="numberLocale" value={s.numberLocale ?? ""} hint="Example en-US gives 1,000 and fr-FR gives 1 000. Used for prices." />
+<F label="Appointments: days ahead" name="appointmentDaysAhead" value={String(s.appointmentDaysAhead ?? "")} hint="How many days ahead couples can book an appointment." />
+<F label="Appointments: closed weekdays" name="appointmentClosedDays" value={s.appointmentClosedDays ?? ""} hint="Comma separated numbers, 0 = Sunday ... 6 = Saturday. Example 0" />
+<F label="Time zone offset (hours from UTC)" name="timezoneOffset" value={String(s.timezoneOffset ?? "")} hint="Example 2 for Kigali." />
+<F label="Calendar months shown" name="calendarMonths" value={String(s.calendarMonths ?? "")} hint="1 to 12. Availability calendar on listing pages." />
+<div className="sm:col-span-2"><label className="label" htmlFor="amenityEmojis">Amenity emojis</label><textarea id="amenityEmojis" name="amenityEmojis" rows={10} defaultValue={(s.amenityEmojis ?? []).join("\n")} className="input font-mono" /><p className="mt-1 text-xs text-muted">One per line: word | emoji. The first line whose word appears in the amenity name wins. A line "* | emoji" is the fallback.</p></div>
         <F label="Contact phone" name="contactPhone" value={s.contactPhone} />
         <F label="Contact email" name="contactEmail" value={s.contactEmail} />
         <F label="Contact address" name="contactAddress" value={s.contactAddress} />

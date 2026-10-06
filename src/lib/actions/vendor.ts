@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { endVendorSession, requireVendor } from "../auth";
 import { mutate, readDb } from "../db";
+import { mergeAttrs } from "../attrs";
 import type { InquiryStatus } from "../types";
 
 const str = (fd: FormData, k: string) => String(fd.get(k) ?? "").trim();
@@ -59,6 +60,7 @@ export async function saveVendorListingAction(fd: FormData): Promise<void> {
     l.videos = lines(fd, "videos");
     l.packages = packages;
     l.bookedDates = bookedDates;
+    l.attrs = mergeAttrs(l.attrs, d.categories.find((c) => c.slug === l.categorySlug)?.fields, fd);
     if (fd.has("maxGuests")) {
       l.venue = {
         ...l.venue,

@@ -37,6 +37,7 @@ export const FIELDS: Field[] = [
     L("Venues | /venues", "Vendors | /vendors", "For vendors | /for-vendors", "Join as vendor | /join"), 5),
 
   f("WhatsApp button", "whatsapp.label", "Button text", "WhatsApp"),
+  f("WhatsApp button", "whatsapp.request", "First line of the WhatsApp message a client sends to a vendor after a request ({site} = site name)", "Hello, I just sent a request on {site}:", 2),
   f("WhatsApp button", "whatsapp.message", "Message the customer starts with ({site} = site name)", "Hello {site}, I would like help planning my wedding.", 2),
 
   f("For vendors page", "vendors.title", "Heading", "Grow your wedding business with Wacu Events"),
@@ -239,7 +240,94 @@ const EXTRA: Field[] = [
     ["plan.commissionShort", "Commission in join form ({commission})", "{commission}% commission"],
   ]),
 ];
-FIELDS.push(...EXTRA);
+const EXTRA2: Field[] = [
+  ...X("Vendor panel", [
+    ["vendor.title", "Panel heading and page title", "Vendor panel"],
+    ["vendor.signOut", "Sign out button", "Sign out"],
+    ["vendor.saved", "Saved banner", "Saved."],
+    ["vendor.removed", "Listing removed banner", "Listing removed."],
+    ["vendor.statListings", "Stat: listings", "Listings"],
+    ["vendor.statViews", "Stat: total views", "Total views"],
+    ["vendor.statWeek", "Stat: views last 7 days", "Views, last 7 days"],
+    ["vendor.statRequests", "Stat: requests", "Requests"],
+    ["vendor.yourListings", "Listings heading", "Your listings"],
+    ["vendor.pendingNote", "Note on unapproved listing", "Visible on the site only after the admin approves it."],
+    ["vendor.statsLine", "Stats line ({views} {week} {today} {requests})", "{views} views - {week} in the last 7 days - {today} today - {requests} requests"],
+    ["vendor.edit", "Edit button", "Edit"],
+    ["vendor.viewPublic", "View public page button", "View public page"],
+    ["vendor.remove", "Remove button", "Remove"],
+    ["vendor.removeConfirm", "Remove confirmation", "Remove this listing permanently?"],
+    ["vendor.noListings", "No listings message", "No listings linked to this email."],
+    ["vendor.requestsTitle", "Requests heading", "Requests from couples"],
+    ["vendor.noRequests", "No requests message", "No requests yet."],
+    ["vendor.reqFor", "Request line ({listing} {date})", "For {listing} - {date}"],
+    ["vendor.reqEvent", "Request event date ({date})", "event {date}"],
+    ["vendor.reqGuests", "Request guests ({n})", "{n} guests"],
+    ["vendor.set", "Set status button", "Set"],
+  ]),
+  ...X("Vendor sign in", [
+    ["vendorLogin.title", "Heading and page title", "Vendor sign in"],
+    ["vendorLogin.text", "Text", "Use the Google account whose email you gave when you applied."],
+  ]),
+  ...X("Vendor edit page", [
+    ["vendorEdit.title", "Heading and page title", "Edit listing"],
+    ["vendorEdit.errName", "Error: name", "Name is required."],
+    ["vendorEdit.cardBasics", "Card: basics", "Basics"],
+    ["vendorEdit.cardLocation", "Card: location (currency is added)", "Location & price"],
+    ["vendorEdit.cardContact", "Card: contact", "Contact & social"],
+    ["vendorEdit.cardMedia", "Card: media", "Photos, packages & availability"],
+    ["vendorEdit.cardVenue", "Card: venue", "Venue details"],
+    ["vendorEdit.lblName", "Label: business name", "Business name"],
+    ["vendorEdit.lblTagline", "Label: tagline", "Tagline"],
+    ["vendorEdit.lblDescription", "Label: description", "Description"],
+    ["vendorEdit.tinLabel", "TIN label", "TIN number"],
+    ["vendorEdit.tinNotSet", "TIN not set", "not set"],
+    ["vendorEdit.tinNote", "TIN note", "(only the admin can change it)"],
+    ["vendorEdit.lblDistricts", "Label: districts", "Districts"],
+    ["vendorEdit.lblAddress", "Label: address", "Address"],
+    ["vendorEdit.lblPriceMin", "Label: price from", "Price from"],
+    ["vendorEdit.lblPriceMax", "Label: price up to", "Price up to"],
+    ["vendorEdit.lblPhone", "Label: phone", "Phone"],
+    ["vendorEdit.lblWhatsapp", "Label: WhatsApp", "WhatsApp"],
+    ["vendorEdit.lblEmail", "Label: contact email", "Contact email"],
+    ["vendorEdit.lblWebsite", "Label: website", "Website"],
+    ["vendorEdit.lblInstagram", "Label: Instagram", "Instagram URL"],
+    ["vendorEdit.lblFacebook", "Label: Facebook", "Facebook URL"],
+    ["vendorEdit.lblTiktok", "Label: TikTok", "TikTok URL"],
+    ["vendorEdit.lblYoutube", "Label: YouTube", "YouTube URL"],
+    ["vendorEdit.lblPackages", "Label: packages", "Packages"],
+    ["vendorEdit.hintPackages", "Hint: packages", "One per line: Name | price | description"],
+    ["vendorEdit.lblBooked", "Label: booked dates", "Booked dates"],
+    ["vendorEdit.hintBooked", "Hint: booked dates", "YYYY-MM-DD, one per line"],
+    ["vendorEdit.lblMinGuests", "Label: min guests", "Min guests"],
+    ["vendorEdit.lblMaxGuests", "Label: max guests", "Max guests"],
+    ["vendorEdit.lblSeated", "Label: seated", "Seated capacity"],
+    ["vendorEdit.lblStanding", "Label: standing", "Standing capacity"],
+    ["vendorEdit.lblWeekday", "Label: weekday price", "Weekday price"],
+    ["vendorEdit.lblWeekend", "Label: weekend price", "Weekend price"],
+    ["vendorEdit.lblDeposit", "Label: deposit", "Deposit"],
+    ["vendorEdit.lblCancel", "Label: cancellation", "Cancellation policy"],
+    ["vendorEdit.lblAmenities", "Label: amenities", "Amenities"],
+    ["vendorEdit.save", "Save button", "Save changes"],
+    ["vendorEdit.removeListing", "Remove button", "Remove listing"],
+  ]),
+  ...X("Dashboards", [
+    ["dash.comingSoon", "Coming soon badge", "Coming soon"],
+    ["dash.backHome", "Back to home button", "Back to home"],
+    ["dash.couple.title", "Couple dashboard heading", "Couple dashboard"],
+    ["dash.couple.intro", "Couple dashboard intro", "Your planning space: save favorites, budget, track guests and follow your checklist."],
+  ]),
+  f("Dashboards", "dash.couple.sections", "Couple dashboard sections (one per line)", L("Wishlist", "Budget planner", "Guest list", "Checklist", "Bookings", "Messages", "Payments"), 8),
+  ...X("Listing page (row icons)", [
+    ["listing.emojiGuests", "Icon: guests row", "\u{1F465}"],
+    ["listing.emojiSeated", "Icon: seated row", "\u{1FA91}"],
+    ["listing.emojiPrice", "Icon: price rows", "\u{1F4B5}"],
+    ["listing.emojiCancel", "Icon: cancellation row", "\u{1F4DD}"],
+  ]),
+];
+export const fill = (t: string, m: Record<string, string | number>): string =>
+  Object.keys(m).reduce((a, k) => a.split("{" + k + "}").join(String(m[k])), t);
+FIELDS.push(...EXTRA, ...EXTRA2);
 export const DEFAULTS: Record<string, string> = Object.fromEntries(FIELDS.map((x) => [x.key, x.value]));
 
 type Src = Pick<Settings, "content"> | { content?: Record<string, string> } | undefined | null;
@@ -253,7 +341,7 @@ export const ts = (s: Settings, key: string, extra: Record<string, string> = {})
   for (const k of Object.keys(extra)) v = v.split("{" + k + "}").join(extra[k]);
   return v;
 };
-export const priceOpts = (s: Settings) => ({ cur: txt(s, "locale.currency"), ask: txt(s, "price.ask"), from: txt(s, "price.from") });
+export const priceOpts = (s: Settings) => ({ cur: txt(s, "locale.currency"), ask: txt(s, "price.ask"), from: txt(s, "price.from"), loc: s.numberLocale });
 export const list =  (s: Src, key: string): string[] => txt(s, key).split("\n").map((x) => x.trim()).filter(Boolean);
 export const pairs = (s: Src, key: string): [string, string][] =>
   list(s, key).map((l): [string, string] => {

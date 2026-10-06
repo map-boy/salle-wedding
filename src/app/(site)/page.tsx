@@ -10,7 +10,7 @@ export default async function Home() {
   const db = await readDb();
   const s = db.settings;
   const featured = searchListings(db).filter((l) => l.featured).slice(0, 6);
-  const groups = [...db.groups].filter((g) => g.id !== "planning").sort((a, b) => a.order - b.order);
+  const groups = [...db.groups].filter((g) => !g.hidden).sort((a, b) => a.order - b.order);
   const steps = pairs(s, "home.howSteps");
   const hero = s.heroImage || "/hero/hero-1.jpg";
 

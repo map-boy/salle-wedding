@@ -22,5 +22,5 @@ export default async function VenuePage(props: PageProps<"/venues/[id]">) {
   const db = await readDb();
   const l = db.listings.find((x) => x.id === id);
   if (!l || l.status !== "approved" || kindOf(db, l) !== "venue") notFound();
-  return <><ViewTracker id={l.id} /><ListingDetail db={db} l={l} back={"/venues/" + l.id} sent={first(sp.sent) === "1"} error={first(sp.error)} /></>;
+  return <><ViewTracker id={l.id} /><ListingDetail db={db} l={l} back={"/venues/" + l.id} sent={first(sp.sent) === "1"} error={first(sp.error)} wamsg={first(sp.m)} /></>;
 }

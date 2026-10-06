@@ -6,6 +6,8 @@ import type { Db, Listing } from "@/lib/types";
 import { amenityEmoji, catEmoji } from "@/lib/emoji";
 import { isPremium } from "@/lib/plans";
 import { Badge, Banner, Stars } from "./ui";
+import { AttrView } from "./attr-view";
+import { Calendar } from "./availability-calendar";
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -26,8 +28,8 @@ function Row({ k, v }: { k: string; v: string }) {
 }
 
 export function ListingDetail({
-  db, l, back, sent, error,
-}: { db: Db; l: Listing; back: string; sent: boolean; error: string }) {
+  db, l, back, sent, error, wamsg = "",
+}: { db: Db; l: Listing; back: string; sent: boolean; error: string; wamsg?: string }) {
   const cat = categoryOf(db, l.categorySlug);
   const isVenue = kindOf(db, l) === "venue";
   const hidePrice = !!cat?.hidePrice;
@@ -36,7 +38,8 @@ export function ListingDetail({
   const v = l.venue;
   const today = new Date().toISOString().slice(0, 10);
   const booked = l.bookedDates.filter((d) => d >= today).sort();
-  const wa = digits(l.contact.whatsapp || l.contact.phone);
+  const wa0 = digits(l.contact.whatsapp || l.contact.phone);
+  const wa = wa0.startsWith("0") ? txt(db.settings, "locale.phonePrefix") + wa0.slice(1) : wa0;
   const socials = Object.entries(l.social).filter(([, url]) => url);
   const photos = l.photos.slice(0, 9);
   const st = db.settings;
@@ -80,22 +83,24 @@ export function ListingDetail({
 
           {isVenue && (
             <Block title={txt(st, "listing.capacity")}>
-              <Row k={"👥 " + txt(st, "listing.rowGuests")} v={v.maxGuests ? ts(st, "listing.guestsRange", { min: String(v.minGuests || 0), max: String(v.maxGuests) }) : ask} />
-              <Row k={"🪑 " + txt(st, "listing.rowSeated")} v={v.seated || v.standing ? `${v.seated} / ${v.standing}` : ask} />
-              <Row k={"💵 " + txt(st, "listing.rowWeekday")} v={v.weekdayPrice ? rwf(v.weekdayPrice, cur) : ask} />
-              <Row k={"💵 " + txt(st, "listing.rowWeekend")} v={v.weekendPrice ? rwf(v.weekendPrice, cur) : ask} />
-              <Row k={"💵 " + txt(st, "listing.rowDeposit")} v={v.deposit ? rwf(v.deposit, cur) : ask} />
-              <Row k={"📝 " + txt(st, "listing.rowCancel")} v={v.cancellationPolicy || ask} />
+              <Row k={txt(st, "listing.emojiGuests") + " " + txt(st, "listing.rowGuests")} v={v.maxGuests ? ts(st, "listing.guestsRange", { min: String(v.minGuests || 0), max: String(v.maxGuests) }) : ask} />
+              <Row k={txt(st, "listing.emojiSeated") + " " + txt(st, "listing.rowSeated")} v={v.seated || v.standing ? `${v.seated} / ${v.standing}` : ask} />
+              <Row k={txt(st, "listing.emojiPrice") + " " + txt(st, "listing.rowWeekday")} v={v.weekdayPrice ? rwf(v.weekdayPrice, cur, st.numberLocale) : ask} />
+              <Row k={txt(st, "listing.emojiPrice") + " " + txt(st, "listing.rowWeekend")} v={v.weekendPrice ? rwf(v.weekendPrice, cur, st.numberLocale) : ask} />
+              <Row k={txt(st, "listing.emojiPrice") + " " + txt(st, "listing.rowDeposit")} v={v.deposit ? rwf(v.deposit, cur, st.numberLocale) : ask} />
+              <Row k={txt(st, "listing.emojiCancel") + " " + txt(st, "listing.rowCancel")} v={v.cancellationPolicy || ask} />
             </Block>
           )}
 
           {isVenue && v.amenities.length > 0 && (
             <Block title={txt(st, "listing.amenities")}>
               <div className="flex flex-wrap gap-2">
-                {v.amenities.map((a) => <span key={a} className="rounded-full border border-line bg-cream-50 px-3 py-1 text-sm">{amenityEmoji(a) + " " + a}</span>)}
+                {v.amenities.map((a) => <span key={a} className="rounded-full border border-line bg-cream-50 px-3 py-1 text-sm">{amenityEmoji(a, st.amenityEmojis) + " " + a}</span>)}
               </div>
             </Block>
           )}
+
+          <AttrView title={cat?.name ?? ""} fields={cat?.fields ?? []} attrs={l.attrs} cur={cur} loc={st.numberLocale} />
 
           {l.packages.length > 0 && (
             <Block title={txt(st, "listing.packages")}>
@@ -103,7 +108,7 @@ export function ListingDetail({
                 {l.packages.map((p, i) => (
                   <div key={i} className="rounded-xl border border-line p-4">
                     <p className="font-semibold">{p.name}</p>
-                    {!hidePrice && <p className="text-sm font-medium text-wine-700">{rwf(p.price, cur)}</p>}
+                    {!hidePrice && <p className="text-sm font-medium text-wine-700">{rwf(p.price, cur, st.numberLocale)}</p>}
                     <p className="mt-1 text-sm text-muted">{p.description}</p>
                   </div>
                 ))}
@@ -112,11 +117,12 @@ export function ListingDetail({
           )}
 
           <Block title={txt(st, "listing.availability")}>
+            <Calendar booked={l.bookedDates} months={st.calendarMonths ?? 0} locale={st.dateLocale} />
             {booked.length ? (
               <>
                 <p className="mb-3 text-sm text-muted">{txt(st, "listing.alreadyBooked")}</p>
                 <div className="flex flex-wrap gap-2">
-                  {booked.map((d) => <span key={d} className="rounded-full bg-neutral-100 px-3 py-1 text-sm text-neutral-700">{fmtDate(d)}</span>)}
+                  {booked.map((d) => <span key={d} className="rounded-full bg-neutral-100 px-3 py-1 text-sm text-neutral-700">{fmtDate(d, st.dateLocale)}</span>)}
                 </div>
               </>
             ) : <p className="text-sm text-muted">{txt(st, "listing.noBooked")}</p>}
@@ -149,7 +155,7 @@ export function ListingDetail({
         <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
           <div className="card p-6">
             <h2 className="text-xl font-semibold">{txt(st, "listing.sendTitle")}</h2>
-            {sent && <div className="mt-3"><Banner>{txt(st, "listing.sent")}</Banner></div>}
+            {sent && <div className="mt-3 space-y-2"><Banner>{txt(st, "listing.sent")}</Banner>{wa && wamsg && <a href={`https://wa.me/${wa}?text=${encodeURIComponent(wamsg)}`} target="_blank" rel="noopener noreferrer" className="btn btn-primary w-full">{txt(st, "ui.chatWhatsapp")}</a>}</div>}
             {error === "missing" && <div className="mt-3"><Banner tone="bad">{txt(st, "listing.errMissing")}</Banner></div>}
             {error === "booked" && <div className="mt-3"><Banner tone="bad">{txt(st, "listing.errBooked")}</Banner></div>}
             <form action={submitInquiry} className="mt-4 space-y-3">

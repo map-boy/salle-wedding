@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { emptyListing } from "../defaults";
 import { mutate, newId, readDb } from "../db";
 import { notifyAdmins } from "../push";
+import { txt } from "../content";
 
 const str = (fd: FormData, k: string) => String(fd.get(k) ?? "").trim();
 const safeBack = (b: string) => (b.startsWith("/") && !b.startsWith("//") ? b : "/");
@@ -25,7 +26,11 @@ export async function submitInquiry(fd: FormData): Promise<void> {
       status: "new", createdAt: new Date().toISOString(),
     });
   });
-  redirect(`${back}?sent=1`);
+  const g = Number(str(fd, "guests")) || 0;
+  const intro = txt(db.settings, "whatsapp.request").split("{site}").join(db.settings.siteName);
+  const msg = [intro, l.name, name + " " + phone, eventDate, g, str(fd, "message")].filter(Boolean).join("\n");
+  try { await notifyAdmins(l.name, name + " " + phone, "/admin/inquiries"); } catch { /* push is best-effort */ }
+  redirect(`${back}?sent=1&m=${encodeURIComponent(msg)}`);
 }
 
 export async function submitVendorApplication(fd: FormData): Promise<void> {

@@ -7,13 +7,14 @@ import { SiteMenu } from "./site-menu";
 export async function SiteHeader() {
   const { settings, groups, categories } = await readDb();
   const services = [...groups]
-    .filter((g) => g.id !== "planning")
+    .filter((g) => !g.hidden)
     .sort((a, b) => a.order - b.order)
-    .map((g) => {
-      const first = categories.filter((c) => c.groupId === g.id).sort((a, b) => a.order - b.order)[0];
-      return first ? { id: g.id, name: g.name, href: categoryHref(first), emoji: catEmoji(first) } : null;
-    })
-    .filter((x): x is { id: string; name: string; href: string; emoji: string } => x !== null);
+    .map((g) => ({
+      id: g.id, name: g.name,
+      items: categories.filter((c) => c.groupId === g.id).sort((a, b) => a.order - b.order)
+        .map((c) => ({ slug: c.slug, name: c.name, href: categoryHref(c), emoji: catEmoji(c) })),
+    }))
+    .filter((g) => g.items.length > 0);
   const items = pairs(settings, "menu.items").map(([label, href]) => ({ label, href }));
 
   return (

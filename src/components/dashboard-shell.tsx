@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export function DashboardShell({ title, intro, sections }: { title: string; intro: string; sections: string[] }) {
+export function DashboardShell({ title, intro, sections, soon, back }: { title: string; intro: string; sections: string[]; soon: string; back: string }) {
   return (
     <div className="container-page py-12">
       <h1 className="text-3xl font-semibold sm:text-4xl">{title}</h1>
@@ -9,11 +9,11 @@ export function DashboardShell({ title, intro, sections }: { title: string; intr
         {sections.map((s) => (
           <div key={s} className="card flex items-center justify-between p-6">
             <span className="font-medium">{s}</span>
-            <span className="badge bg-gold-100 text-gold-500">Coming soon</span>
+            <span className="badge bg-gold-100 text-gold-500">{soon}</span>
           </div>
         ))}
       </div>
-      <Link href="/" className="btn btn-outline mt-10">Back to home</Link>
+      <Link href="/" className="btn btn-outline mt-10">{back}</Link>
     </div>
   );
 }

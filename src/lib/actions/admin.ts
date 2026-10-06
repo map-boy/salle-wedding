@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { endSession, passwordOk, requireAdmin, startSession } from "../auth";
 import { backupDb, mutate, newId, normalizeDb, readDb, writeDb } from "../db";
+import { mergeAttrs, textToFields } from "../attrs";
+import { applyWacu } from "../migrate";
 import type { Category, Db, Group, InquiryStatus, Kind, Listing, Review, Status } from "../types";
 
 const str = (fd: FormData, k: string) => String(fd.get(k) ?? "").trim();
@@ -73,6 +75,7 @@ export async function saveListingAction(fd: FormData): Promise<void> {
         youtube: str(fd, "youtube"), website: str(fd, "website"),
       },
       photos, videos: lines(fd, "videos"), packages, bookedDates,
+      attrs: mergeAttrs(prev?.attrs, db.categories.find((c) => c.slug === str(fd, "categorySlug"))?.fields, fd),
       venue: {
         minGuests: num(fd, "minGuests"), maxGuests: num(fd, "maxGuests"), seated: num(fd, "seated"), standing: num(fd, "standing"),
         weekdayPrice: num(fd, "weekdayPrice"), weekendPrice: num(fd, "weekendPrice"), deposit: num(fd, "deposit"),
@@ -131,7 +134,7 @@ export async function saveGroupAction(fd: FormData): Promise<void> {
   const id = given || slugify(name) || newId();
   const order = num(fd, "order");
   await mutate((db) => {
-    const g: Group = { id, name, order };
+    const g: Group = { id, name, order, hidden: bool(fd, "hidden") };
     const i = db.groups.findIndex((x) => x.id === id);
     if (i >= 0) db.groups[i] = g;
     else db.groups.push(g);
@@ -160,7 +163,7 @@ export async function saveCategoryAction(fd: FormData): Promise<void> {
   if (db.categories.some((c) => c.slug === slug && c.slug !== original)) redirect("/admin/categories?error=slug");
   const kind: Kind = str(fd, "kind") === "venue" ? "venue" : "vendor";
   await mutate((d) => {
-    const cat: Category = { slug, name, groupId: str(fd, "groupId"), kind, description: str(fd, "description"), order: num(fd, "order"), emoji: str(fd, "emoji"), icon: str(fd, "icon"), hidePrice: bool(fd, "hidePrice") };
+    const cat: Category = { slug, name, groupId: str(fd, "groupId"), kind, description: str(fd, "description"), order: num(fd, "order"), emoji: str(fd, "emoji"), icon: str(fd, "icon"), hidePrice: bool(fd, "hidePrice"), fields: textToFields(String(fd.get("fields") ?? "")) };
     const i = d.categories.findIndex((c) => c.slug === original);
     if (i >= 0) {
       d.categories[i] = cat;
@@ -271,7 +274,7 @@ export async function saveSettingsAction(fd: FormData): Promise<void> {
       contactAddress: str(fd, "contactAddress"), whatsapp: str(fd, "whatsapp"), footerNote: str(fd, "footerNote"),
       districts: lines(fd, "districts"), amenities: lines(fd, "amenities"),
       siteUrl: str(fd, "siteUrl"), heroImage: str(fd, "heroImage"), seoImage: str(fd, "seoImage"),
-      seoDescription: str(fd, "seoDescription"), aboutText: str(fd, "aboutText"), appointmentSlots: lines(fd, "appointmentSlots"),
+      seoDescription: str(fd, "seoDescription"), aboutText: str(fd, "aboutText"), appointmentSlots: lines(fd, "appointmentSlots"), amenityEmojis: lines(fd, "amenityEmojis"), dateLocale: str(fd, "dateLocale"), calendarMonths: Math.max(1, Math.min(12, num(fd, "calendarMonths"))), appointmentDaysAhead: Math.max(1, num(fd, "appointmentDaysAhead")), appointmentClosedDays: str(fd, "appointmentClosedDays"), timezoneOffset: num(fd, "timezoneOffset"), numberLocale: str(fd, "numberLocale"),
     };
   });
   touch();
@@ -295,4 +298,11 @@ export async function saveRawAction(fd: FormData): Promise<void> {
   await writeDb(normalizeDb(o as Partial<Db>));
   touch();
   redirect("/admin/data?saved=1");
+}
+
+export async function resetWacuFieldsAction(): Promise<void> {
+  await requireAdmin();
+  await mutate((db) => { applyWacu(db, true); });
+  touch();
+  redirect("/admin/categories?saved=1");
 }

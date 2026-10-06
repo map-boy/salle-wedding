@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Banner } from "@/components/ui";
 import { submitAppointment } from "@/lib/actions/appointments";
-import { SLOTS, isBookable, takenSlots, todayKigali } from "@/lib/appointments";
+import { isBookable, rulesOf, takenSlots, todayKigali } from "@/lib/appointments";
 import { ts, txt } from "@/lib/content";
 import { readDb } from "@/lib/db";
 import { first, fmtDate } from "@/lib/format";
@@ -13,7 +13,7 @@ export async function generateMetadata() {
   return { title: ts(s, "seo.planning.title"), description: ts(s, "seo.planning.desc") };
 }
 
-const DOW = ["M", "T", "W", "T", "F", "S", "S"];
+
 
 const addMonth = (m: string, n: number) => {
   const [y, mo] = m.split("-").map(Number);
@@ -24,17 +24,19 @@ export default async function PlanningPage(props: { searchParams: Promise<Record
   const sp = await props.searchParams;
   const db = await readDb();
   const taken = takenSlots(db.inquiries);
-  const slots = (db.settings.appointmentSlots ?? []).length ? db.settings.appointmentSlots : SLOTS;
-  const today = todayKigali();
+  const rules = rulesOf(db.settings);
+  const DOW = Array.from({ length: 7 }, (_, k) => new Date(Date.UTC(2024, 0, 1 + k)).toLocaleDateString(db.settings.dateLocale || undefined, { weekday: "narrow", timeZone: "UTC" }));
+  const slots = db.settings.appointmentSlots ?? [];
+  const today = todayKigali(rules.offsetHours);
   const curMonth = today.slice(0, 7);
-  const maxMonth = addMonth(curMonth, 6);
+  const maxMonth = addMonth(curMonth, Math.ceil(rules.daysAhead / 30));
 
   let month = first(sp.month);
   if (!/^\d{4}-\d{2}$/.test(month) || month < curMonth) month = curMonth;
   if (month > maxMonth) month = maxMonth;
 
   let date = first(sp.date);
-  if (!isBookable(date, today)) date = "";
+  if (!isBookable(date, today, rules)) date = "";
 
   const sent = first(sp.sent) === "1";
   const error = first(sp.error);
@@ -42,7 +44,7 @@ export default async function PlanningPage(props: { searchParams: Promise<Record
   const [y, mo] = month.split("-").map(Number);
   const daysInMonth = new Date(Date.UTC(y, mo, 0)).getUTCDate();
   const offset = (new Date(Date.UTC(y, mo - 1, 1)).getUTCDay() + 6) % 7;
-  const monthLabel = new Date(Date.UTC(y, mo - 1, 1)).toLocaleDateString("en-GB", { month: "long", year: "numeric", timeZone: "UTC" });
+  const monthLabel = new Date(Date.UTC(y, mo - 1, 1)).toLocaleDateString(db.settings.dateLocale || undefined, { month: "long", year: "numeric", timeZone: "UTC" });
   const cells: (number | null)[] = [...Array(offset).fill(null), ...Array.from({ length: daysInMonth }, (_, i) => i + 1)];
 
   return (
@@ -75,7 +77,7 @@ export default async function PlanningPage(props: { searchParams: Promise<Record
               if (d === null) return <div key={`e${i}`} />;
               const ds = `${month}-${String(d).padStart(2, "0")}`;
               const base = "flex h-10 items-center justify-center rounded-lg";
-              if (!isBookable(ds, today)) return <div key={ds} className={`${base} text-zinc-300`}>{d}</div>;
+              if (!isBookable(ds, today, rules)) return <div key={ds} className={`${base} text-zinc-300`}>{d}</div>;
               if (slots.every((t) => taken.has(`${ds}|${t}`))) return <div key={ds} className={`${base} bg-neutral-100 text-neutral-700 line-through`}>{d}</div>;
               const selected = ds === date;
               return (
@@ -95,7 +97,7 @@ export default async function PlanningPage(props: { searchParams: Promise<Record
           {date ? (
             <form action={submitAppointment} className="space-y-4">
               <input type="hidden" name="date" value={date} />
-              <h2 className="text-xl font-semibold">{fmtDate(date)}</h2>
+              <h2 className="text-xl font-semibold">{fmtDate(date, db.settings.dateLocale)}</h2>
               <div>
                 <p className="label">{txt(db.settings, "planning.chooseTime")}</p>
                 <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">

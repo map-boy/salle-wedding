@@ -2,9 +2,10 @@ import { ConfirmButton } from "@/components/confirm-button";
 import { Banner } from "@/components/ui";
 import { ImageInput } from "@/components/image-input";
 import {
-  deleteCategoryAction, deleteGroupAction, saveCategoryAction, saveGroupAction,
+  deleteCategoryAction, deleteGroupAction, resetWacuFieldsAction, saveCategoryAction, saveGroupAction,
 } from "@/lib/actions/admin";
 import { readDb } from "@/lib/db";
+import { fieldsToText } from "@/lib/attrs";
 import { first } from "@/lib/format";
 import { PageViewToggle } from "@/components/view-toggle";
 
@@ -39,6 +40,7 @@ export default async function AdminCategories(props: PageProps<"/admin/categorie
                 <input type="hidden" name="id" value={g.id} />
                 <input name="name" defaultValue={g.name} className="input w-56" />
                 <input name="order" type="number" defaultValue={g.order} className="input w-24" />
+<label className="flex items-center gap-2 text-sm"><input type="checkbox" name="hidden" defaultChecked={!!g.hidden} />Hide from menu and home</label>
                 <button className="btn btn-outline btn-sm" type="submit">Save</button>
               </form>
               <form action={deleteGroupAction}>
@@ -50,6 +52,7 @@ export default async function AdminCategories(props: PageProps<"/admin/categorie
           <form action={saveGroupAction} className="flex flex-wrap items-center gap-2 bg-cream-100 p-4">
             <input name="name" placeholder="New group name" className="input w-56" />
             <input name="order" type="number" defaultValue={groups.length} className="input w-24" />
+<label className="flex items-center gap-2 text-sm"><input type="checkbox" name="hidden" />Hide from menu and home</label>
             <button className="btn btn-primary btn-sm" type="submit">Add group</button>
           </form>
         </div>
@@ -57,6 +60,7 @@ export default async function AdminCategories(props: PageProps<"/admin/categorie
 
       <section>
         <h2 className="mb-3 text-xl font-semibold">Categories</h2>
+        <form action={resetWacuFieldsAction} className="mb-3"><ConfirmButton message="Reset all category fields to the Wacu defaults?" className="btn btn-outline btn-sm">Reset fields to Wacu defaults</ConfirmButton></form>
         <div className="card divide-y divide-line view-host view-wide">
           {cats.map((c) => (
             <div key={c.slug} className="p-4">
@@ -71,7 +75,9 @@ export default async function AdminCategories(props: PageProps<"/admin/categorie
                 <input name="order" type="number" defaultValue={c.order} className="input" />
                 <input name="emoji" defaultValue={c.emoji ?? ""} placeholder="Emoji" className="input" /><ImageInput name="icon" defaultValue={c.icon ?? ""} className="md:col-span-2" />
                 <label className="flex items-center gap-2 text-sm md:col-span-2"><input type="checkbox" name="hidePrice" defaultChecked={!!c.hidePrice} />Hide prices</label>
-                <input name="description" defaultValue={c.description} className="input md:col-span-3" />
+                <p className="text-xs text-muted md:col-span-6">Vendor form fields, one per line: key | Label | text, textarea, number, money, select, multi or url | option, option | hint</p>
+<textarea name="fields" rows={6} defaultValue={fieldsToText(c.fields)} className="input font-mono text-xs md:col-span-6" />
+<input name="description" defaultValue={c.description} className="input md:col-span-3" />
                 <button className="btn btn-outline btn-sm" type="submit">Save ({used(c.slug)} listings)</button>
               </form>
               <form action={deleteCategoryAction} className="mt-2">
@@ -89,7 +95,9 @@ export default async function AdminCategories(props: PageProps<"/admin/categorie
             <input name="order" type="number" defaultValue={cats.length} className="input" />
             <input name="emoji" placeholder="Emoji" className="input" /><input name="icon" placeholder="Icon image URL or /icons/x.png (optional)" className="input md:col-span-2" />
             <label className="flex items-center gap-2 text-sm md:col-span-2"><input type="checkbox" name="hidePrice" />Hide prices</label>
-            <input name="description" placeholder="Description" className="input md:col-span-3" />
+            <p className="text-xs text-muted md:col-span-6">Vendor form fields, one per line: key | Label | text, textarea, number, money, select, multi or url | option, option | hint</p>
+<textarea name="fields" rows={4} className="input font-mono text-xs md:col-span-6" />
+<input name="description" placeholder="Description" className="input md:col-span-3" />
             <button className="btn btn-primary btn-sm" type="submit">Add category</button>
           </form>
         </div>

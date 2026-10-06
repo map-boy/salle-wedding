@@ -1,4 +1,5 @@
 import { ConfirmButton } from "@/components/confirm-button";
+import { AttrInputs } from "@/components/attr-inputs";
 import { MediaField } from "@/components/media-field";
 import { deleteListingAction, saveListingAction } from "@/lib/actions/admin";
 import type { Db, Listing } from "@/lib/types";
@@ -36,6 +37,7 @@ export function ListingForm({ l, db, isNew }: { l: Listing; db: Db; isNew: boole
   const amenities = [...new Set([...db.settings.amenities, ...l.venue.amenities])];
   const groups = [...db.groups].sort((a, b) => a.order - b.order);
   const v = l.venue;
+  const fields = db.categories.find((c) => c.slug === l.categorySlug)?.fields ?? [];
   return (
     <div className="space-y-6">
       <form action={saveListingAction} className="space-y-6">
@@ -77,6 +79,8 @@ export function ListingForm({ l, db, isNew }: { l: Listing; db: Db; isNew: boole
             <label className="flex items-center gap-2"><input type="checkbox" name="trending" defaultChecked={l.trending} />Trending</label>
           </div>
         </Card>
+
+        {fields.length > 0 && <Card title={db.categories.find((c) => c.slug === l.categorySlug)?.name ?? ""}><AttrInputs fields={fields} attrs={l.attrs} /></Card>}
 
         <Card title="Location & price (RWF)">
           <div className="sm:col-span-2">
