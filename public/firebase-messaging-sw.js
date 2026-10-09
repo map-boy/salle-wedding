@@ -10,7 +10,7 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(title, {
       body: d.body || n.body || "",
-      icon: "/favicon.ico",
+      icon: "/pwa-192",
       data: { link: d.link || "/admin/applications" },
     })
   );

@@ -4,7 +4,7 @@ export type InquiryStatus = "new" | "contacted" | "confirmed" | "closed";
 
 export type FieldType = "text" | "textarea" | "number" | "money" | "select" | "multi" | "url";
 export type FieldDef = { key: string; label: string; type: FieldType; order: number; options?: string[]; hint?: string };
-export type Group = { id: string; name: string; order: number; hidden?: boolean };
+export type Group = { id: string; name: string; order: number; hidden?: boolean; emoji?: string; icon?: string };
 export type Category = {
   slug: string; name: string; groupId: string; kind: Kind; description: string; order: number;
   emoji?: string; icon?: string; hidePrice?: boolean; fields?: FieldDef[];

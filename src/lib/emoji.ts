@@ -12,3 +12,11 @@ export function amenityEmoji(name: string, rules: string[] = []): string {
   }
   return dflt;
 }
+
+const E = (...c: number[]) => String.fromCodePoint(...c) + "\uFE0F";
+const GROUP_DEFAULT: Record<string, string> = {
+  venues: E(0x1F3DB), food: E(0x1F37D), media: E(0x1F4F8), decor: E(0x1F3A8), beauty: E(0x1F484),
+  transport: E(0x1F697), entertainment: E(0x1F3A7), planning: E(0x1F4CB), drinks: E(0x1F942),
+};
+/** group emoji: the admin's choice first, then a default for the built-in groups, then a ring. */
+export const groupEmoji = (g: { id: string; emoji?: string }): string => g.emoji || GROUP_DEFAULT[g.id] || E(0x1F48D);

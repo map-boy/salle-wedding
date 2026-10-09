@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { pairs } from "@/lib/content";
 import { categoryHref, readDb } from "@/lib/db";
-import { catEmoji } from "@/lib/emoji";
+import { catEmoji, groupEmoji } from "@/lib/emoji";
 import { SiteMenu } from "./site-menu";
 
 export async function SiteHeader() {
@@ -10,7 +10,7 @@ export async function SiteHeader() {
     .filter((g) => !g.hidden)
     .sort((a, b) => a.order - b.order)
     .map((g) => ({
-      id: g.id, name: g.name,
+      id: g.id, name: groupEmoji(g) + " " + g.name,
       items: categories.filter((c) => c.groupId === g.id).sort((a, b) => a.order - b.order)
         .map((c) => ({ slug: c.slug, name: c.name, href: categoryHref(c), emoji: catEmoji(c) })),
     }))

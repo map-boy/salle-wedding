@@ -134,7 +134,7 @@ export async function saveGroupAction(fd: FormData): Promise<void> {
   const id = given || slugify(name) || newId();
   const order = num(fd, "order");
   await mutate((db) => {
-    const g: Group = { id, name, order, hidden: bool(fd, "hidden") };
+    const g: Group = { id, name, order, hidden: bool(fd, "hidden"), emoji: str(fd, "emoji"), icon: str(fd, "icon") };
     const i = db.groups.findIndex((x) => x.id === id);
     if (i >= 0) db.groups[i] = g;
     else db.groups.push(g);
@@ -147,8 +147,8 @@ export async function deleteGroupAction(fd: FormData): Promise<void> {
   await requireAdmin();
   const id = str(fd, "id");
   const db = await readDb();
-  if (db.categories.some((c) => c.groupId === id)) redirect("/admin/categories?error=groupinuse");
-  await mutate((d) => { d.groups = d.groups.filter((g) => g.id !== id); });
+  if (!db.groups.some((g) => g.id === id)) redirect("/admin/categories?saved=1"); await backupDb();
+  await mutate((d) => { d.groups = d.groups.filter((g) => g.id !== id); d.categories = d.categories.filter((c) => c.groupId !== id); });
   touch();
   redirect("/admin/categories?saved=1");
 }
@@ -180,7 +180,7 @@ export async function deleteCategoryAction(fd: FormData): Promise<void> {
   await requireAdmin();
   const slug = str(fd, "slug");
   const db = await readDb();
-  if (db.listings.some((l) => l.categorySlug === slug)) redirect("/admin/categories?error=inuse");
+  if (!db.categories.some((c) => c.slug === slug)) redirect("/admin/categories?saved=1"); await backupDb();
   await mutate((d) => { d.categories = d.categories.filter((c) => c.slug !== slug); });
   touch();
   redirect("/admin/categories?saved=1");

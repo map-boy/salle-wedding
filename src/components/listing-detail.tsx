@@ -38,7 +38,7 @@ export function ListingDetail({
   const v = l.venue;
   const today = new Date().toISOString().slice(0, 10);
   const booked = l.bookedDates.filter((d) => d >= today).sort();
-  const wa0 = digits(l.contact.whatsapp || l.contact.phone);
+  const wa0 = digits(db.settings.whatsapp || db.settings.contactPhone);
   const wa = wa0.startsWith("0") ? txt(db.settings, "locale.phonePrefix") + wa0.slice(1) : wa0;
   const socials = Object.entries(l.social).filter(([, url]) => url);
   const photos = l.photos.slice(0, 9);
@@ -117,7 +117,7 @@ export function ListingDetail({
           )}
 
           <Block title={txt(st, "listing.availability")}>
-            <Calendar booked={l.bookedDates} months={st.calendarMonths ?? 0} locale={st.dateLocale} />
+            <Calendar booked={l.bookedDates} months={st.calendarMonths || 3} locale={st.dateLocale} />
             {booked.length ? (
               <>
                 <p className="mb-3 text-sm text-muted">{txt(st, "listing.alreadyBooked")}</p>
@@ -175,9 +175,9 @@ export function ListingDetail({
 
           <div className="card space-y-2 p-6 text-sm">
             <h2 className="text-xl font-semibold">{txt(st, "listing.contact")}</h2>
-            {l.contact.phone && <p><a href={`tel:${l.contact.phone}`} className="hover:text-wine-600">{l.contact.phone}</a></p>}
+            {db.settings.contactPhone && <p><a href={`tel:${db.settings.contactPhone}`} className="hover:text-wine-600">{db.settings.contactPhone}</a></p>}
             {wa && <p><a href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer" className="text-ok hover:underline">{txt(st, "ui.chatWhatsapp")}</a></p>}
-            {l.contact.email && <p><a href={`mailto:${l.contact.email}`} className="hover:text-wine-600">{l.contact.email}</a></p>}
+            {db.settings.contactEmail && <p><a href={`mailto:${db.settings.contactEmail}`} className="hover:text-wine-600">{db.settings.contactEmail}</a></p>}
             {socials.length > 0 && (
               <div className="flex flex-wrap gap-3 pt-2">
                 {socials.map(([k, url]) => (

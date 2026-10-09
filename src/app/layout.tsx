@@ -21,6 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { default: title, template: "%s | " + s.siteName },
     description,
     applicationName: s.siteName,
+    appleWebApp: { capable: true, title: s.siteName, statusBarStyle: "default" },
     alternates: { canonical: "/" },
     robots: { index: true, follow: true },
     openGraph: { type: "website", siteName: s.siteName, title, description, url: "/", locale: txt(s, "locale.localeCode"), images: [{ url: image, alt: s.siteName }] },

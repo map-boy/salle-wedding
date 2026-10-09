@@ -218,7 +218,7 @@ export type Filters = { q?: string; district?: string; category?: string; kind?:
 
 export function searchListings(db: Db, f: Filters = {}): Listing[] {
   const q = (f.q ?? "").trim().toLowerCase();
-  let out = db.listings.filter((l) => l.status === "approved");
+  let out = db.listings.filter((l) => l.status === "approved" && !!categoryOf(db, l.categorySlug));
   if (f.kind) out = out.filter((l) => kindOf(db, l) === f.kind);
   if (f.category) out = out.filter((l) => l.categorySlug === f.category);
   if (f.district) out = out.filter((l) => l.districts.includes(f.district as string));

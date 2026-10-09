@@ -1,3 +1,4 @@
+import { BookedDatesPicker } from "@/components/booked-dates-picker";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AttrInputs } from "@/components/attr-inputs";
@@ -111,7 +112,7 @@ export default async function VendorEdit(props: {
         <Card title={t("vendorEdit.cardMedia")}>
           <MediaField photos={l.photos} videos={l.videos} />
           <T label={t("vendorEdit.lblPackages")} name="packages" rows={5} value={l.packages.map((p) => `${p.name} | ${p.price} | ${p.description}`).join("\n")} hint={t("vendorEdit.hintPackages")} />
-          <T label={t("vendorEdit.lblBooked")} name="bookedDates" rows={3} value={l.bookedDates.join("\n")} hint={t("vendorEdit.hintBooked")} />
+          <div className="sm:col-span-2"><span className="label">{t("vendorEdit.lblBooked")}</span><BookedDatesPicker name="bookedDates" defaultValue={l.bookedDates} locale={db.settings.dateLocale} /></div>
         </Card>
 
         {isVenue && (

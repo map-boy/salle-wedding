@@ -3,6 +3,7 @@ import { ListingGrid } from "@/components/listing-cards";
 import { pairs, txt } from "@/lib/content";
 import { categoryHref, readDb, searchListings } from "@/lib/db";
 import { CatIcon } from "@/components/cat-icon";
+import { GroupBadge } from "@/components/group-art";
 
 export const dynamic = "force-dynamic";
 
@@ -41,7 +42,7 @@ export default async function Home() {
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {groups.map((g) => (
             <div key={g.id} className="card card-hover p-6">
-              <h3 className="border-l-4 border-gold-400 pl-3 text-lg font-semibold text-wine-700">{g.name}</h3>
+              <GroupBadge g={g} /><h3 className="border-l-4 border-gold-400 pl-3 text-lg font-semibold text-wine-700">{g.name}</h3>
               <ul className="mt-3 space-y-1.5 text-sm">
                 {db.categories.filter((c) => c.groupId === g.id).sort((a, b) => a.order - b.order).map((c) => (
                   <li key={c.slug}><Link href={categoryHref(c)} className="text-muted transition hover:text-wine-600"><CatIcon c={c} />{" " + c.name}</Link></li>
