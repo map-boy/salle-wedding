@@ -19,7 +19,7 @@ export function DatePickerCalendar({ name, booked = [], locale, required = false
   const label = new Date(Date.UTC(y, m, 1)).toLocaleDateString(loc, { month: "long", year: "numeric", timeZone: "UTC" });
   const atCurrent = y === now.getFullYear() && m === now.getMonth();
   const go = (delta: number) => { const d = new Date(Date.UTC(y, m + delta, 1)); setYm([d.getUTCFullYear(), d.getUTCMonth()]); };
-  const base = "flex h-9 items-center justify-center rounded-lg text-sm";
+  const base = "flex h-10 items-center justify-center rounded-lg text-sm";
   return (
     <div className="card p-3">
       <div className="mb-3 flex items-center justify-between">
@@ -29,7 +29,7 @@ export function DatePickerCalendar({ name, booked = [], locale, required = false
         <p className="text-sm font-semibold">{label}</p>
         <button type="button" onClick={() => go(1)} className="btn btn-outline btn-sm" aria-label="Next month">&rarr;</button>
       </div>
-      <div className="grid grid-cols-7 gap-1 text-center">
+      <div className="grid grid-cols-7 gap-1.5 text-center">
         {wd.map((w, i) => <div key={i} className="py-1 text-xs font-medium uppercase text-muted">{w}</div>)}
         {Array.from({ length: lead }, (_, i) => <div key={"e" + i} />)}
         {Array.from({ length: days }, (_, i) => {
@@ -45,7 +45,7 @@ export function DatePickerCalendar({ name, booked = [], locale, required = false
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted">
         <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded bg-green-100" /> Available</span>
-        <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded bg-neutral-200" /> Booked</span>
+        <span className="flex items-center gap-1.5"><i className="h-3 w-3 rounded bg-neutral-200" /> Fully booked</span>
         {sel && <button type="button" onClick={() => setSel("")} className="ml-auto text-wine-600 hover:underline">Clear</button>}
       </div>
       {sel && <p className="mt-2 text-sm font-medium">{new Date(sel + "T00:00:00Z").toLocaleDateString(loc, { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}</p>}

@@ -23,7 +23,7 @@ export function BookedDatesPicker({ name, defaultValue = [], locale }: { name: s
         <p className="text-sm font-medium">{label}</p>
         <button type="button" onClick={() => go(1)} className="btn btn-outline btn-sm" aria-label="Next month">&rsaquo;</button>
       </div>
-      <div className="grid grid-cols-7 gap-1 text-center text-xs">
+      <div className="grid grid-cols-7 gap-1.5 text-center text-xs">
         {wd.map((w, i) => <div key={i} className="py-1 text-muted">{w}</div>)}
         {Array.from({ length: lead }, (_, i) => <div key={"e" + i} />)}
         {Array.from({ length: days }, (_, i) => {
@@ -31,7 +31,7 @@ export function BookedDatesPicker({ name, defaultValue = [], locale }: { name: s
           const on = sel.includes(k);
           return (
             <button key={k} type="button" onClick={() => toggle(k)} aria-pressed={on}
-              className={"rounded-md py-2 text-sm transition " + (on ? "bg-wine-600 font-semibold text-white" : "hover:bg-wine-50")}>
+              className={"flex h-10 items-center justify-center rounded-lg text-sm font-medium transition " + (on ? "bg-wine-600 text-white" : "bg-green-50 text-ok hover:bg-green-100")}>
               {i + 1}
             </button>
           );
