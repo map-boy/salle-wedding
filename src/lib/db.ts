@@ -239,3 +239,46 @@ export function searchListings(db: Db, f: Filters = {}): Listing[] {
   }
   return out;
 }
+/* ---------- scalable targeted queries (no full-DB read) ---------- */
+export async function getListing(id: string): Promise<Listing | null> {
+  const f = firestore();
+  if (!f) return (await readDb()).listings.find((l) => l.id === id) ?? null;
+  const d = await f.collection("listings").doc(id).get();
+  return d.exists ? (d.data() as Listing) : null;
+}
+
+export async function pageListings(
+  o: { status?: Listing["status"]; categorySlug?: string; limit?: number; after?: string } = {},
+): Promise<{ items: Listing[]; next: string | null }> {
+  const limit = Math.min(o.limit ?? 24, 100);
+  const f = firestore();
+  if (!f) {
+    let all = (await readDb()).listings;
+    if (o.status) all = all.filter((l) => l.status === o.status);
+    if (o.categorySlug) all = all.filter((l) => l.categorySlug === o.categorySlug);
+    const start = o.after ? all.findIndex((l) => l.id === o.after) + 1 : 0;
+    const items = all.slice(start, start + limit);
+    return { items, next: items.length === limit ? items[items.length - 1].id : null };
+  }
+  let q: import("firebase-admin/firestore").Query = f.collection("listings");
+  if (o.status) q = q.where("status", "==", o.status);
+  if (o.categorySlug) q = q.where("categorySlug", "==", o.categorySlug);
+  q = q.orderBy("__name__");
+  if (o.after) q = q.startAfter(o.after);
+  const snap = await q.limit(limit).get();
+  const items = snap.docs.map((d) => d.data() as Listing);
+  return { items, next: items.length === limit ? items[items.length - 1].id : null };
+}
+
+export async function addRow(col: "inquiries" | "reviews", row: { id: string }): Promise<void> {
+  const f = firestore();
+  if (!f) return mutate((db) => { (db[col] as unknown as { id: string }[]).unshift(row); });
+  await f.collection(col).doc(row.id).set(plain(row));
+  cache = null;
+}
+
+export async function countDocs(col: "listings" | "reviews" | "inquiries"): Promise<number> {
+  const f = firestore();
+  if (!f) return (await readDb())[col].length;
+  return (await f.collection(col).count().get()).data().count;
+}

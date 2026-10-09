@@ -11,7 +11,9 @@ export default async function Home() {
   const db = await readDb();
   const s = db.settings;
   const featured = searchListings(db).filter((l) => l.featured).slice(0, 6);
-  const groups = [...db.groups].filter((g) => !g.hidden).sort((a, b) => a.order - b.order);
+  const live = new Set(searchListings(db).map((l) => l.categorySlug));
+  const catsOf = (gid: string) => db.categories.filter((c) => c.groupId === gid && live.has(c.slug)).sort((a, b) => a.order - b.order);
+  const groups = [...db.groups].filter((g) => !g.hidden && catsOf(g.id).length > 0).sort((a, b) => a.order - b.order);
   const steps = pairs(s, "home.howSteps");
   const hero = s.heroImage || "/hero/hero-1.jpg";
 
@@ -44,7 +46,7 @@ export default async function Home() {
             <div key={g.id} className="card card-hover p-6">
               <GroupBadge g={g} /><h3 className="border-l-4 border-gold-400 pl-3 text-lg font-semibold text-wine-700">{g.name}</h3>
               <ul className="mt-3 space-y-1.5 text-sm">
-                {db.categories.filter((c) => c.groupId === g.id).sort((a, b) => a.order - b.order).map((c) => (
+                {catsOf(g.id).map((c) => (
                   <li key={c.slug}><Link href={categoryHref(c)} className="text-muted transition hover:text-wine-600"><CatIcon c={c} />{" " + c.name}</Link></li>
                 ))}
               </ul>
