@@ -16,11 +16,13 @@ export default async function VendorsPage(props: PageProps<"/vendors">) {
   const sp = await props.searchParams;
   const db = await readDb();
   const values = { q: first(sp.q), district: first(sp.district), category: first(sp.category), guests: "", sort: first(sp.sort) };
-  const list = searchListings(db, { kind: "vendor", q: values.q, district: values.district, category: values.category, sort: values.sort });
-  const cats = db.categories.filter((c) => c.kind === "vendor").sort((a, b) => a.order - b.order);
+  const group = first(sp.group);
+  const grp = db.groups.find((g) => g.id === group);
+  const list = searchListings(db, { kind: "vendor", group: grp ? grp.id : "", q: values.q, district: values.district, category: values.category, sort: values.sort });
+  const cats = db.categories.filter((c) => c.kind === "vendor" && (!grp || c.groupId === grp.id)).sort((a, b) => a.order - b.order);
   return (
     <div className="container-page py-10">
-      <h1 className="text-3xl font-semibold sm:text-4xl">{txt(db.settings, "browse.vendorsTitle")}</h1>
+      <h1 className="text-3xl font-semibold sm:text-4xl">{grp ? grp.name : txt(db.settings, "browse.vendorsTitle")}</h1>
       <div className="mt-5 flex flex-wrap gap-2">
         {cats.map((c) => (
           <Link key={c.slug} href={categoryHref(c)} className="rounded-full border border-line bg-paper px-3.5 py-1.5 text-sm transition hover:border-wine-500 hover:text-wine-600">{c.name}</Link>

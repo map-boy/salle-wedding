@@ -214,13 +214,14 @@ export function ratingOf(db: Db, listingId: string) {
   return { avg, count };
 }
 
-export type Filters = { q?: string; district?: string; category?: string; kind?: Kind; minGuests?: number; sort?: string };
+export type Filters = { group?: string; q?: string; district?: string; category?: string; kind?: Kind; minGuests?: number; sort?: string };
 
 export function searchListings(db: Db, f: Filters = {}): Listing[] {
   const q = (f.q ?? "").trim().toLowerCase();
   let out = db.listings.filter((l) => l.status === "approved" && !!categoryOf(db, l.categorySlug));
   if (f.kind) out = out.filter((l) => kindOf(db, l) === f.kind);
   if (f.category) out = out.filter((l) => l.categorySlug === f.category);
+  if (f.group) out = out.filter((l) => categoryOf(db, l.categorySlug)?.groupId === f.group);
   if (f.district) out = out.filter((l) => l.districts.includes(f.district as string));
   if (f.minGuests) out = out.filter((l) => l.venue.maxGuests >= (f.minGuests as number));
   if (q) {

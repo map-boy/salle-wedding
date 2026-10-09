@@ -43,7 +43,7 @@ export function SiteMenu({ items, services }: { items: Item[]; services: Svc[] }
                 <div className="ml-3 border-l border-line pl-2">
                   {services.map((g) => (
                     <div key={g.id}>
-                      <p className="px-3 pt-2 text-xs uppercase tracking-wide text-muted">{g.name}</p>
+                      <Link href={"/vendors?group=" + g.id} className="block px-3 pt-2 text-xs uppercase tracking-wide text-muted hover:text-wine-600">{g.name}</Link>
                       {g.items.map((c) => <Link key={c.slug} href={c.href} className={item}>{c.emoji + " " + c.name}</Link>)}
                     </div>
                   ))}
