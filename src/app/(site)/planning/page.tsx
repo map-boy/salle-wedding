@@ -5,6 +5,7 @@ import { isBookable, rulesOf, takenSlots, todayKigali } from "@/lib/appointments
 import { ts, txt } from "@/lib/content";
 import { readDb } from "@/lib/db";
 import { first, fmtDate } from "@/lib/format";
+import { DatePickerCalendar } from "@/components/date-picker-calendar";
 
 export const dynamic = "force-dynamic";
 
@@ -116,7 +117,7 @@ export default async function PlanningPage(props: { searchParams: Promise<Record
               <input name="email" type="email" placeholder={txt(db.settings, "form.phEmail")} className="input" />
               <div>
                 <label className="label" htmlFor="eventDate">{txt(db.settings, "planning.weddingDate")}</label>
-                <input id="eventDate" name="eventDate" type="date" className="input" />
+                <DatePickerCalendar name="eventDate" locale={db.settings.dateLocale} />
               </div>
               <textarea name="message" rows={3} placeholder={txt(db.settings, "planning.phMessage")} className="input" />
               <button type="submit" className="btn btn-primary w-full">{txt(db.settings, "planning.submit")}</button>

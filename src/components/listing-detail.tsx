@@ -2,6 +2,7 @@ import { submitInquiry } from "@/lib/actions/public";
 import { priceOpts, ts, txt } from "@/lib/content";
 import { categoryOf, kindOf, ratingOf } from "@/lib/db";
 import { digits, fmtDate, priceText, rwf } from "@/lib/format";
+import { DatePickerCalendar } from "@/components/date-picker-calendar";
 import type { Db, Listing } from "@/lib/types";
 import { amenityEmoji, catEmoji } from "@/lib/emoji";
 import { isPremium } from "@/lib/plans";
@@ -165,7 +166,7 @@ export function ListingDetail({
               <input name="phone" required placeholder={txt(st, "form.phPhone")} className="input" />
               <input name="email" type="email" placeholder={txt(st, "form.phEmail")} className="input" />
               <div className="grid grid-cols-2 gap-3">
-                <input name="eventDate" type="date" className="input" />
+                <div className="col-span-2"><DatePickerCalendar name="eventDate" booked={l.bookedDates} locale={st.dateLocale} /></div>
                 <input name="guests" type="number" min={0} placeholder={txt(st, "listing.phGuests")} className="input" />
               </div>
               <textarea name="message" rows={3} placeholder={txt(st, "listing.phMessage")} className="input" />
