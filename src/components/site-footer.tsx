@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { pairs, txt } from "@/lib/content";
 import { readDb } from "@/lib/db";
 
@@ -9,7 +10,7 @@ export async function SiteFooter() {
     <footer id="contact" className="mt-20 border-t-4 border-gold-400 bg-wine-900 text-white/80">
       <div className="container-page grid gap-8 py-12 md:grid-cols-3">
         <div>
-          <p className="font-display text-xl font-semibold text-white">{s.siteName}</p>
+          <div className="flex items-center gap-3"><Image src="/logo-mark.png" alt="" width={35} height={40} className="h-10 w-auto" /><p className="font-display text-xl font-semibold text-white">{s.siteName}</p></div>
           <p className="mt-2 max-w-xs text-sm text-white/60">{s.tagline}</p>
         </div>
         <div className="text-sm">

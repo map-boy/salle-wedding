@@ -118,7 +118,7 @@ export function makeSeed(): Db {
       siteUrl: "",
       content: {},
       heroImage: "/hero/hero-1.jpg",
-      seoImage: "/hero/SEO.jpg",
+      seoImage: "/og-logo.png",
       seoDescription: "Discover Rwanda's best wedding venues, photographers, caterers, decorators, wedding cars, DJs & MCs and more. Plan your wedding in one place with Wacu Events.",
       aboutText: "Wacu Events brings Rwanda's wedding venues and vendors together in one place, so couples can discover the right people, compare their options and plan with confidence.",
       appointmentSlots: ["09:00", "10:00", "11:00", "12:00", "14:00", "15:00", "16:00"],

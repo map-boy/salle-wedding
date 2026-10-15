@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { categoryOf } from "./db";
 import type { Db, Listing, Settings } from "./types";
 
-export const DEFAULT_OG = "/hero/SEO.jpg";
+export const DEFAULT_OG = "/og-logo.png";
 
 export function siteUrl(s?: Partial<Pick<Settings, "siteUrl">>): string {
   let u = (s?.siteUrl || process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL || "http://localhost:3000").trim();

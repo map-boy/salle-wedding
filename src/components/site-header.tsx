@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { pairs } from "@/lib/content";
 import { categoryHref, readDb } from "@/lib/db";
 import { catEmoji, groupEmoji } from "@/lib/emoji";
@@ -20,7 +21,7 @@ export async function SiteHeader() {
   return (
     <header className="sticky top-0 z-30 border-b border-line bg-paper/80 shadow-sm backdrop-blur-md">
       <div className="container-page flex h-16 items-center gap-6">
-        <Link href="/" className="font-display text-xl font-semibold text-wine-700"><span aria-hidden className="mr-2 inline-block h-2.5 w-2.5 rounded-full bg-gold-400" />{settings.siteName}</Link>
+        <Link href="/" className="flex items-center gap-2.5 font-display text-xl font-semibold text-wine-700"><Image src="/logo-mark-dark.png" alt="" width={31} height={36} priority className="h-9 w-auto" />{settings.siteName}</Link>
         <SiteMenu items={items} services={services} />
       </div>
     </header>
