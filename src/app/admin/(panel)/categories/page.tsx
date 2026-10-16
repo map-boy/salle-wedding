@@ -80,6 +80,9 @@ export default async function AdminCategories(props: PageProps<"/admin/categorie
                 <details className="rounded-lg border border-line p-3 md:col-span-6"><summary className="cursor-pointer text-sm font-medium">Advanced (for developers only, you can ignore this)</summary><p className="mt-2 text-xs text-muted">Vendor form fields, one per line: key | Label | text, textarea, number, money, select, multi or url | option, option | hint</p>
 <textarea name="fields" rows={6} defaultValue={fieldsToText(c.fields)} className="input font-mono text-xs md:col-span-6" /></details>
 <input name="description" defaultValue={c.description} className="input md:col-span-3" />
+                <ImageInput label="Service page banner (optional)" name="heroImage" defaultValue={c.heroImage ?? ""} className="md:col-span-3" />
+                <textarea name="details" rows={5} placeholder="Full details shown at the top of the service page" defaultValue={c.details ?? ""} className="input md:col-span-6" />
+                <textarea name="highlights" rows={4} placeholder={"Highlights, one per line: Title | short text"} defaultValue={(c.highlights ?? []).join("\n")} className="input md:col-span-6" />
                 <button className="btn btn-outline btn-sm" type="submit">Save ({used(c.slug)} listings)</button>
               </form>
               <form action={deleteCategoryAction} className="mt-2">
@@ -100,6 +103,9 @@ export default async function AdminCategories(props: PageProps<"/admin/categorie
             <details className="rounded-lg border border-line p-3 md:col-span-6"><summary className="cursor-pointer text-sm font-medium">Advanced (for developers only, you can ignore this)</summary><p className="mt-2 text-xs text-muted">Vendor form fields, one per line: key | Label | text, textarea, number, money, select, multi or url | option, option | hint</p>
 <textarea name="fields" rows={4} className="input font-mono text-xs md:col-span-6" /></details>
 <input name="description" placeholder="Description" className="input md:col-span-3" />
+            <ImageInput label="Service page banner (optional)" name="heroImage" defaultValue="" className="md:col-span-3" />
+            <textarea name="details" rows={5} placeholder="Full details shown at the top of the service page" className="input md:col-span-6" />
+            <textarea name="highlights" rows={4} placeholder={"Highlights, one per line: Title | short text"} className="input md:col-span-6" />
             <button className="btn btn-primary btn-sm" type="submit">Add category</button>
           </form>
         </div>

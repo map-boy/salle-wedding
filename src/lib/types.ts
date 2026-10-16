@@ -7,7 +7,7 @@ export type FieldDef = { key: string; label: string; type: FieldType; order: num
 export type Group = { id: string; name: string; order: number; hidden?: boolean; emoji?: string; icon?: string };
 export type Category = {
   slug: string; name: string; groupId: string; kind: Kind; description: string; order: number;
-  emoji?: string; icon?: string; hidePrice?: boolean; fields?: FieldDef[];
+  emoji?: string; icon?: string; hidePrice?: boolean; fields?: FieldDef[]; heroImage?: string; details?: string; highlights?: string[];
 };
 export type Photo = { label: string; url: string };
 export type Pkg = { name: string; price: number; description: string };

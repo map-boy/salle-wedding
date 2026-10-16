@@ -14,6 +14,10 @@ export default async function Home() {
   const groups = [...db.groups].filter((g) => !g.hidden).sort((a, b) => a.order - b.order);
   const steps = pairs(s, "home.howSteps");
   const hero = s.heroImage || "/hero/hero-1.jpg";
+  const groupHref = (id: string) => {
+    const cs = db.categories.filter((c) => c.groupId === id);
+    return cs.length > 0 && cs.every((c) => c.kind === "venue") ? "/venues" : "/vendors?group=" + id;
+  };
 
   return (
     <>
@@ -41,11 +45,11 @@ export default async function Home() {
         <p className="mt-2 text-muted">{txt(s, "home.categoriesSubtitle")}</p>
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {groups.map((g) => (
-            <div key={g.id} className="card card-hover p-6">
-              <GroupBadge g={g} /><h3 className="border-l-4 border-gold-400 pl-3 text-lg font-semibold text-wine-700">{g.name}</h3>
+            <div key={g.id} className="card card-hover relative p-6">
+              <GroupBadge g={g} /><h3 className="border-l-4 border-gold-400 pl-3 text-lg font-semibold text-wine-700"><Link href={groupHref(g.id)} className="after:absolute after:inset-0 after:rounded-2xl">{g.name}</Link></h3>
               <ul className="mt-3 space-y-1.5 text-sm">
                 {db.categories.filter((c) => c.groupId === g.id).sort((a, b) => a.order - b.order).map((c) => (
-                  <li key={c.slug}><Link href={categoryHref(c)} className="text-muted transition hover:text-wine-600"><CatIcon c={c} />{" " + c.name}</Link></li>
+                  <li key={c.slug}><Link href={categoryHref(c)} className="relative z-10 text-muted transition hover:text-wine-600"><CatIcon c={c} />{" " + c.name}</Link></li>
                 ))}
               </ul>
             </div>

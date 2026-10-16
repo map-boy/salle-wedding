@@ -163,7 +163,7 @@ export async function saveCategoryAction(fd: FormData): Promise<void> {
   if (db.categories.some((c) => c.slug === slug && c.slug !== original)) redirect("/admin/categories?error=slug");
   const kind: Kind = str(fd, "kind") === "venue" ? "venue" : "vendor";
   await mutate((d) => {
-    const cat: Category = { slug, name, groupId: str(fd, "groupId"), kind, description: str(fd, "description"), order: num(fd, "order"), emoji: str(fd, "emoji"), icon: str(fd, "icon"), hidePrice: bool(fd, "hidePrice"), fields: textToFields(String(fd.get("fields") ?? "")) };
+    const cat: Category = { slug, name, groupId: str(fd, "groupId"), kind, description: str(fd, "description"), order: num(fd, "order"), emoji: str(fd, "emoji"), icon: str(fd, "icon"), hidePrice: bool(fd, "hidePrice"), heroImage: str(fd, "heroImage"), details: str(fd, "details"), highlights: lines(fd, "highlights"), fields: textToFields(String(fd.get("fields") ?? "")) };
     const i = d.categories.findIndex((c) => c.slug === original);
     if (i >= 0) {
       d.categories[i] = cat;

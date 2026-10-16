@@ -13,7 +13,7 @@ export async function SiteHeader() {
     .map((g) => ({
       id: g.id, name: groupEmoji(g) + " " + g.name,
       items: categories.filter((c) => c.groupId === g.id).sort((a, b) => a.order - b.order)
-        .map((c) => ({ slug: c.slug, name: c.name, href: categoryHref(c), emoji: catEmoji(c) })),
+        .map((c) => ({ slug: c.slug, name: c.name, href: categoryHref(c), emoji: catEmoji(c), desc: c.description })),
     }))
     .filter((g) => g.items.length > 0);
   const items = pairs(settings, "menu.items").map(([label, href]) => ({ label, href }));
