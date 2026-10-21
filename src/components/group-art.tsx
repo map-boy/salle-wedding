@@ -90,7 +90,25 @@ const ART: Record<string, ReactNode> = {
       <path d="M52 8V14M49 11H55" />
     </>
   ),
-  rings: (
+  sound: (
+    <>
+      <rect x="8" y="22" width="24" height="34" rx="4" />
+      <circle cx="20" cy="43" r="7" />
+      <circle cx="20" cy="43" r="2" />
+      <circle cx="20" cy="30" r="2.5" />
+      <path d="M40 12L50 8L54 17L44 21Z" />
+      <path d="M42 26L40 36M47 24L52 34M52 21L60 28" />
+    </>
+  ),
+  protocol: (
+    <>
+      <path d="M30 36L12 26V46Z" />
+      <path d="M34 36L52 26V46Z" />
+      <rect x="28" y="31" width="8" height="10" rx="2.5" />
+      <Heart x={32} y={15} s={1.1} />
+      <path d="M52 8V14M49 11H55" />
+    </>
+  ),  rings: (
     <>
       <circle cx="23" cy="40" r="12" />
       <circle cx="41" cy="40" r="12" />
@@ -110,6 +128,8 @@ const ART: Record<string, ReactNode> = {
 /** picks a drawing from the group's id or name, so groups you add later get art too */
 function artKey(g: Group): string | null {
   const s = (g.id + " " + g.name).toLowerCase();
+  if (/sound|lighting|\blights?\b/.test(s)) return "sound";
+  if (/protocol|\busher/.test(s)) return "protocol";
   if (/\brings?\b|\bgifts?\b|souvenir/.test(s)) return "rings";
   if (/accommodation|honeymoon|hotel|lodging|\bstay\b/.test(s)) return "stay";
   if (/venue/.test(s)) return "venue";
