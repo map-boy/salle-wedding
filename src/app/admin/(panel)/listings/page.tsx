@@ -18,8 +18,10 @@ export default async function AdminListings(props: PageProps<"/admin/listings">)
   const media = first(sp.tab) === "media";
   const status = first(sp.status);
   const q = first(sp.q).toLowerCase();
+  const category = first(sp.category);
   const db = await readDb();
-  const rows = db.listings.filter((l) => (!status || l.status === status) && (!q || l.name.toLowerCase().includes(q)));
+  const categoryName = category ? (categoryOf(db, category)?.name ?? category) : "";
+  const rows = db.listings.filter((l) => (!status || l.status === status) && (!q || l.name.toLowerCase().includes(q)) && (!category || l.categorySlug === category));
   const views: Record<string, { total: number }> = media ? {} : await getViews(rows.map((l) => l.id));
 
   const statusForm = (l: Listing) => (
@@ -54,7 +56,7 @@ export default async function AdminListings(props: PageProps<"/admin/listings">)
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-3xl font-semibold">Listings and media</h1>
+        <h1 className="text-3xl font-semibold">Listings and media{categoryName && ` - ${categoryName}`}</h1>
         {!media && (
           <div className="flex items-center gap-2">
             <PageViewToggle />
@@ -73,14 +75,18 @@ export default async function AdminListings(props: PageProps<"/admin/listings">)
         <>
           <div className="mt-5 flex flex-wrap items-center gap-2">
             {tabs.map((t) => (
-              <Link key={t || "all"} href={t ? `/admin/listings?status=${t}` : "/admin/listings"} className={`btn btn-sm ${status === t ? "btn-primary" : "btn-outline"}`}>{t || "all"}</Link>
+              <Link key={t || "all"} href={category ? (t ? `/admin/listings?status=${t}&category=${category}` : `/admin/listings?category=${category}`) : (t ? `/admin/listings?status=${t}` : "/admin/listings")} className={`btn btn-sm ${status === t ? "btn-primary" : "btn-outline"}`}>{t || "all"}</Link>
             ))}
             <form action="/admin/listings" method="get" className="ml-auto flex gap-2">
               {status && <input type="hidden" name="status" value={status} />}
+              {category && <input type="hidden" name="category" value={category} />}
               <input name="q" defaultValue={first(sp.q)} placeholder="Search name" className="input w-48" />
               <button className="btn btn-outline btn-sm" type="submit">Search</button>
             </form>
           </div>
+          {category && (
+            <p className="mt-3 text-sm text-muted">Filtered by category: <span className="font-medium text-ink">{categoryName}</span>{" "}<Link href={status ? `/admin/listings?status=${status}` : "/admin/listings"} className="text-wine-600 hover:underline">Clear</Link></p>
+          )}
 
           <div className="only-grid mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {rows.map((l) => {

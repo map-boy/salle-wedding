@@ -1,8 +1,10 @@
+import Link from "next/link";
 import { groupEmoji } from "@/lib/emoji";
 import { EmojiPicker } from "@/components/emoji-picker";
 import { ConfirmButton } from "@/components/confirm-button";
 import { Banner } from "@/components/ui";
 import { ImageInput } from "@/components/image-input";
+import { FieldsEditor } from "@/components/fields-editor";
 import {
   deleteCategoryAction, deleteGroupAction, resetWacuFieldsAction, saveCategoryAction, saveGroupAction,
 } from "@/lib/actions/admin";
@@ -12,6 +14,10 @@ import { first } from "@/lib/format";
 import { PageViewToggle } from "@/components/view-toggle";
 
 export const dynamic = "force-dynamic";
+
+const FOLDER_ICON = "\u{1F4C1}";
+const TAG_ICON = "\u{1F3F7}\u{FE0F}";
+const CARET = "\u25BE";
 
 const errors: Record<string, string> = {
   name: "A name is required.", slug: "That slug is already used by another category.",
@@ -36,78 +42,131 @@ export default async function AdminCategories(props: PageProps<"/admin/categorie
       <section>
         <h2 className="mb-3 text-xl font-semibold">Groups</h2>
         <div className="card divide-y divide-line">
-          {groups.map((g) => (
-            <div key={g.id} className="flex flex-wrap items-center gap-2 p-4">
-              <form action={saveGroupAction} className="flex flex-1 flex-wrap items-center gap-2">
-                <input type="hidden" name="id" value={g.id} />
-                <input name="name" defaultValue={g.name} className="input w-56" />
-                <input name="order" type="number" defaultValue={g.order} className="input w-24" /><EmojiPicker name="emoji" defaultValue={g.emoji ?? ""} /><ImageInput label="Own picture (optional)" name="icon" defaultValue={g.icon ?? ""} className="w-64" />
-<label className="flex items-center gap-2 text-sm"><input type="checkbox" name="hidden" defaultChecked={!!g.hidden} />Hide from menu and home</label>
-                <button className="btn btn-outline btn-sm" type="submit">Save</button>
-              </form>
-              <form action={deleteGroupAction}>
-                <input type="hidden" name="id" value={g.id} />
-                <ConfirmButton message="Delete this group and every category inside it? Their listings stay saved but are hidden until you add the categories back." className="btn btn-danger btn-sm">Delete</ConfirmButton>
-              </form>
-            </div>
-          ))}
+          {groups.map((g) => {
+            const count = cats.filter((c) => c.groupId === g.id).length;
+            return (
+              <details key={g.id} className="group">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 hover:bg-cream-100 [&::-webkit-details-marker]:hidden">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xl">{g.emoji || groupEmoji(g) || FOLDER_ICON}</span>
+                    <p className="font-medium">{g.name}</p>
+                    <span className="text-xs text-muted">({count} categor{count === 1 ? "y" : "ies"})</span>
+                  </div>
+                  <span className="transition-transform group-open:rotate-180 text-muted">{CARET}</span>
+                </summary>
+                <div className="border-t border-line p-4">
+                  <form action={saveGroupAction} className="flex flex-wrap items-center gap-2">
+                    <input type="hidden" name="id" value={g.id} />
+                    <input name="name" defaultValue={g.name} className="input w-56" />
+                    <input name="order" type="number" defaultValue={g.order} className="input w-24" /><EmojiPicker name="emoji" defaultValue={g.emoji ?? ""} /><ImageInput label="Own picture (optional)" name="icon" defaultValue={g.icon ?? ""} className="w-64" />
+                    <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="hidden" defaultChecked={!!g.hidden} />Hide from menu and home</label>
+                    <button className="btn btn-outline btn-sm" type="submit">Save</button>
+                  </form>
+                  <form action={deleteGroupAction} className="mt-2">
+                    <input type="hidden" name="id" value={g.id} />
+                    <ConfirmButton message="Delete this group and every category inside it? Their listings stay saved but are hidden until you add the categories back." className="btn btn-danger btn-sm">Delete</ConfirmButton>
+                  </form>
+                </div>
+              </details>
+            );
+          })}
           <form action={saveGroupAction} className="flex flex-wrap items-center gap-2 bg-cream-100 p-4">
             <input name="name" placeholder="New group name" className="input w-56" />
             <input name="order" type="number" defaultValue={groups.length} className="input w-24" /><EmojiPicker name="emoji" /><ImageInput label="Own picture (optional)" name="icon" defaultValue="" className="w-64" />
-<label className="flex items-center gap-2 text-sm"><input type="checkbox" name="hidden" />Hide from menu and home</label>
+            <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="hidden" />Hide from menu and home</label>
             <button className="btn btn-primary btn-sm" type="submit">Add group</button>
           </form>
         </div>
       </section>
 
       <section>
-        <h2 className="mb-3 text-xl font-semibold">Categories</h2>
-        <form action={resetWacuFieldsAction} className="mb-3"><ConfirmButton message="Reset all category fields to the Wacu defaults?" className="btn btn-outline btn-sm">Reset fields to Wacu defaults</ConfirmButton></form>
-        <div className="card divide-y divide-line view-host view-wide">
-          {cats.map((c) => (
-            <div key={c.slug} className="p-4">
-              <form action={saveCategoryAction} className="grid gap-2 md:grid-cols-6">
-                <input type="hidden" name="originalSlug" value={c.slug} />
-                <input name="name" defaultValue={c.name} className="input md:col-span-2" />
-                <input name="slug" defaultValue={c.slug} className="input" />
-                <select name="groupId" defaultValue={c.groupId} className="input">
-                  {groups.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}
-                </select>
-                <select name="kind" defaultValue={c.kind} className="input"><option value="venue">venue</option><option value="vendor">vendor</option></select>
-                <input name="order" type="number" defaultValue={c.order} className="input" />
-                <EmojiPicker name="emoji" defaultValue={c.emoji ?? ""} className="md:col-span-2" /><ImageInput name="icon" defaultValue={c.icon ?? ""} className="md:col-span-2" />
-                <label className="flex items-center gap-2 text-sm md:col-span-2"><input type="checkbox" name="hidePrice" defaultChecked={!!c.hidePrice} />Hide prices</label>
-                <details className="rounded-lg border border-line p-3 md:col-span-6"><summary className="cursor-pointer text-sm font-medium">Advanced (for developers only, you can ignore this)</summary><p className="mt-2 text-xs text-muted">Vendor form fields, one per line: key | Label | text, textarea, number, money, select, multi or url | option, option | hint</p>
-<textarea name="fields" rows={6} defaultValue={fieldsToText(c.fields)} className="input font-mono text-xs md:col-span-6" /></details>
-<input name="description" defaultValue={c.description} className="input md:col-span-3" />
-                <ImageInput label="Service page banner (optional)" name="heroImage" defaultValue={c.heroImage ?? ""} className="md:col-span-3" />
-                <textarea name="details" rows={5} placeholder="Full details shown at the top of the service page" defaultValue={c.details ?? ""} className="input md:col-span-6" />
-                <textarea name="highlights" rows={4} placeholder={"Highlights, one per line: Title | short text"} defaultValue={(c.highlights ?? []).join("\n")} className="input md:col-span-6" />
-                <button className="btn btn-outline btn-sm" type="submit">Save ({used(c.slug)} listings)</button>
-              </form>
-              <form action={deleteCategoryAction} className="mt-2">
-                <input type="hidden" name="slug" value={c.slug} />
-                <ConfirmButton message="Delete this category? Its listings stay saved but are hidden until you add a category with the same name again." className="btn btn-danger btn-sm">Delete</ConfirmButton>
-              </form>
-            </div>
-          ))}
-          <form action={saveCategoryAction} className="grid gap-2 bg-cream-100 p-4 md:grid-cols-6">
-            <input type="hidden" name="originalSlug" value="" />
-            <input name="name" placeholder="New category name" className="input md:col-span-2" />
-            <input name="slug" placeholder="slug (optional)" className="input" />
-            <select name="groupId" className="input">{groups.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}</select>
-            <select name="kind" defaultValue="vendor" className="input"><option value="venue">venue</option><option value="vendor">vendor</option></select>
-            <input name="order" type="number" defaultValue={cats.length} className="input" />
-            <EmojiPicker name="emoji" className="md:col-span-2" /><input name="icon" placeholder="Icon image URL or /icons/x.png (optional)" className="input md:col-span-2" />
-            <label className="flex items-center gap-2 text-sm md:col-span-2"><input type="checkbox" name="hidePrice" />Hide prices</label>
-            <details className="rounded-lg border border-line p-3 md:col-span-6"><summary className="cursor-pointer text-sm font-medium">Advanced (for developers only, you can ignore this)</summary><p className="mt-2 text-xs text-muted">Vendor form fields, one per line: key | Label | text, textarea, number, money, select, multi or url | option, option | hint</p>
-<textarea name="fields" rows={4} className="input font-mono text-xs md:col-span-6" /></details>
-<input name="description" placeholder="Description" className="input md:col-span-3" />
-            <ImageInput label="Service page banner (optional)" name="heroImage" defaultValue="" className="md:col-span-3" />
-            <textarea name="details" rows={5} placeholder="Full details shown at the top of the service page" className="input md:col-span-6" />
-            <textarea name="highlights" rows={4} placeholder={"Highlights, one per line: Title | short text"} className="input md:col-span-6" />
-            <button className="btn btn-primary btn-sm" type="submit">Add category</button>
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-xl font-semibold">Categories</h2>
+          <form action={resetWacuFieldsAction}>
+            <ConfirmButton message="Reset all category fields to the Wacu defaults?" className="btn btn-outline btn-sm">Reset fields to Wacu defaults</ConfirmButton>
           </form>
+        </div>
+
+        <div className="space-y-6">
+          {groups.map((g) => {
+            const groupCats = cats.filter((c) => c.groupId === g.id);
+            if (!groupCats.length) return null;
+            return (
+              <div key={g.id}>
+                <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted">
+                  <span>{g.emoji || groupEmoji(g) || FOLDER_ICON}</span>
+                  {g.name}
+                  <span className="font-normal normal-case text-muted">({groupCats.length})</span>
+                </h3>
+                <div className="card divide-y divide-line view-host view-wide">
+                  {groupCats.map((c) => (
+                    <details key={c.slug} className="group">
+                      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 hover:bg-cream-100 [&::-webkit-details-marker]:hidden">
+                        <div className="flex min-w-0 items-center gap-3">
+                          <span className="text-xl">{c.emoji || TAG_ICON}</span>
+                          <div className="min-w-0">
+                            <p className="truncate font-medium">{c.name}</p>
+                            <p className="text-xs text-muted">{c.kind} - {c.slug}</p>
+                          </div>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-3 text-sm text-muted">
+                          <span>{used(c.slug)} listing{used(c.slug) === 1 ? "" : "s"}</span>
+                          <span className="transition-transform group-open:rotate-180">{CARET}</span>
+                        </div>
+                      </summary>
+                      <div className="border-t border-line p-4">
+                        <form action={saveCategoryAction} className="grid gap-2 md:grid-cols-6">
+                          <input type="hidden" name="originalSlug" value={c.slug} />
+                          <input name="name" defaultValue={c.name} className="input md:col-span-2" />
+                          <input name="slug" defaultValue={c.slug} className="input" />
+                          <select name="groupId" defaultValue={c.groupId} className="input">
+                            {groups.map((gg) => <option key={gg.id} value={gg.id}>{gg.name}</option>)}
+                          </select>
+                          <select name="kind" defaultValue={c.kind} className="input"><option value="venue">venue</option><option value="vendor">vendor</option></select>
+                          <input name="order" type="number" defaultValue={c.order} className="input" />
+                          <EmojiPicker name="emoji" defaultValue={c.emoji ?? ""} className="md:col-span-2" /><ImageInput name="icon" defaultValue={c.icon ?? ""} className="md:col-span-2" />
+                          <label className="flex items-center gap-2 text-sm md:col-span-2"><input type="checkbox" name="hidePrice" defaultChecked={!!c.hidePrice} />Hide prices</label>
+                          <FieldsEditor name="fields" defaultValue={fieldsToText(c.fields)} />
+                          <input name="description" defaultValue={c.description} className="input md:col-span-3" />
+                          <ImageInput label="Service page banner (optional)" name="heroImage" defaultValue={c.heroImage ?? ""} className="md:col-span-3" />
+                          <textarea name="details" rows={5} placeholder="Full details shown at the top of the service page" defaultValue={c.details ?? ""} className="input md:col-span-6" />
+                          <textarea name="highlights" rows={4} placeholder={"Highlights, one per line: Title | short text"} defaultValue={(c.highlights ?? []).join("\n")} className="input md:col-span-6" />
+                          <div className="flex items-center gap-2 md:col-span-6">
+                            <button className="btn btn-outline btn-sm" type="submit">Save</button>
+                            <Link href={`/admin/listings?category=${c.slug}`} className="btn btn-sm btn-outline">View {used(c.slug)} listings</Link>
+                          </div>
+                        </form>
+                        <form action={deleteCategoryAction} className="mt-2">
+                          <input type="hidden" name="slug" value={c.slug} />
+                          <ConfirmButton message="Delete this category? Its listings stay saved but are hidden until you add a category with the same name again." className="btn btn-danger btn-sm">Delete</ConfirmButton>
+                        </form>
+                      </div>
+                    </details>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+
+          <div>
+            <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-muted">Add a category</h3>
+            <form action={saveCategoryAction} className="card grid gap-2 bg-cream-100 p-4 md:grid-cols-6">
+              <input type="hidden" name="originalSlug" value="" />
+              <input name="name" placeholder="New category name" className="input md:col-span-2" />
+              <input name="slug" placeholder="slug (optional)" className="input" />
+              <select name="groupId" className="input">{groups.map((g) => <option key={g.id} value={g.id}>{g.name}</option>)}</select>
+              <select name="kind" defaultValue="vendor" className="input"><option value="venue">venue</option><option value="vendor">vendor</option></select>
+              <input name="order" type="number" defaultValue={cats.length} className="input" />
+              <EmojiPicker name="emoji" className="md:col-span-2" /><input name="icon" placeholder="Icon image URL or /icons/x.png (optional)" className="input md:col-span-2" />
+              <label className="flex items-center gap-2 text-sm md:col-span-2"><input type="checkbox" name="hidePrice" />Hide prices</label>
+              <FieldsEditor name="fields" />
+              <input name="description" placeholder="Description" className="input md:col-span-3" />
+              <ImageInput label="Service page banner (optional)" name="heroImage" defaultValue="" className="md:col-span-3" />
+              <textarea name="details" rows={5} placeholder="Full details shown at the top of the service page" className="input md:col-span-6" />
+              <textarea name="highlights" rows={4} placeholder={"Highlights, one per line: Title | short text"} className="input md:col-span-6" />
+              <button className="btn btn-primary btn-sm" type="submit">Add category</button>
+            </form>
+          </div>
         </div>
       </section>
     </div>
