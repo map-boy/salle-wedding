@@ -23,7 +23,7 @@ export type Listing = {
   plan: "free" | "premium"; premiumUntil: string; planRequested: "free" | "premium"; tin: string; ownerEmail: string;
   contact: { phone: string; whatsapp: string; email: string };
   social: { instagram: string; facebook: string; tiktok: string; youtube: string; website: string };
-  photos: Photo[]; videos: string[]; packages: Pkg[]; bookedDates: string[]; venue: VenueInfo; attrs: Record<string, string | number | string[]>;
+  photos: Photo[]; videos: string[]; packages: Pkg[]; bookedDates: string[]; venue: VenueInfo; attrs: Record<string, string | number | string[]>; custom?: { label: string; value: string }[];
   createdAt: string; updatedAt: string;
 };
 export type Review = {

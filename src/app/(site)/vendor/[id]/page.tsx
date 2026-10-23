@@ -2,6 +2,7 @@ import { BookedDatesPicker } from "@/components/booked-dates-picker";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AttrInputs } from "@/components/attr-inputs";
+import { CustomDetails } from "@/components/custom-details";
 import { ConfirmButton } from "@/components/confirm-button";
 import { MediaField } from "@/components/media-field";
 import { Banner, StatusBadge } from "@/components/ui";
@@ -83,6 +84,7 @@ export default async function VendorEdit(props: {
         </Card>
 
         {fields.length > 0 && <Card title={db.categories.find((c) => c.slug === l.categorySlug)?.name ?? ""}><AttrInputs fields={fields} attrs={l.attrs} /></Card>}
+        <CustomDetails defaultRows={l.custom ?? []} initialSlug={l.categorySlug} catGroups={Object.fromEntries(db.categories.map((c) => [c.slug, c.groupId]))} />
 
         <Card title={t("vendorEdit.cardLocation") + " (" + t("locale.currency") + ")"}>
           <div className="sm:col-span-2">

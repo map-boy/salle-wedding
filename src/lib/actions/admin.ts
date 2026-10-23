@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { endSession, passwordOk, requireAdmin, startSession } from "../auth";
 import { backupDb, mutate, newId, normalizeDb, readDb, writeDb } from "../db";
-import { mergeAttrs, textToFields } from "../attrs";
+import { mergeAttrs, parseCustom, textToFields } from "../attrs";
 import { applyWacu } from "../migrate";
 import type { Category, Db, Group, InquiryStatus, Kind, Listing, Review, Status } from "../types";
 
@@ -75,7 +75,7 @@ export async function saveListingAction(fd: FormData): Promise<void> {
         youtube: str(fd, "youtube"), website: str(fd, "website"),
       },
       photos, videos: lines(fd, "videos"), packages, bookedDates,
-      attrs: mergeAttrs(prev?.attrs, db.categories.find((c) => c.slug === str(fd, "categorySlug"))?.fields, fd),
+      custom: parseCustom(fd), attrs: mergeAttrs(prev?.attrs, db.categories.find((c) => c.slug === str(fd, "categorySlug"))?.fields, fd),
       venue: {
         minGuests: num(fd, "minGuests"), maxGuests: num(fd, "maxGuests"), seated: num(fd, "seated"), standing: num(fd, "standing"),
         weekdayPrice: num(fd, "weekdayPrice"), weekendPrice: num(fd, "weekendPrice"), deposit: num(fd, "deposit"),

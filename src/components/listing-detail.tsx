@@ -103,6 +103,12 @@ export function ListingDetail({
 
           <AttrView title={cat?.name ?? ""} fields={cat?.fields ?? []} attrs={l.attrs} cur={cur} loc={st.numberLocale} />
 
+          {(l.custom ?? []).length > 0 && (
+            <Block title="More details">
+              {(l.custom ?? []).map((c, i) => <Row key={i} k={c.label} v={c.value} />)}
+            </Block>
+          )}
+
           {l.packages.length > 0 && (
             <Block title={txt(st, "listing.packages")}>
               <div className="grid gap-3 sm:grid-cols-2">

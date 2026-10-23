@@ -40,3 +40,13 @@ export const fieldsToText = (fs?: FieldDef[]) =>
   [...(fs ?? [])].sort((a, b) => a.order - b.order)
     .map((f) => [f.key, f.label, f.type, (f.options ?? []).join(", "), f.hint ?? ""].join(" | ").replace(/(\s*\|\s*)+$/, ""))
     .join("\n");
+export function parseCustom(fd: FormData): { label: string; value: string }[] {
+  try {
+    const raw: unknown = JSON.parse(String(fd.get("custom") ?? "[]"));
+    if (!Array.isArray(raw)) return [];
+    return raw
+      .map((r) => ({ label: String((r as { label?: unknown })?.label ?? "").trim().slice(0, 80), value: String((r as { value?: unknown })?.value ?? "").trim().slice(0, 500) }))
+      .filter((r) => r.label && r.value)
+      .slice(0, 40);
+  } catch { return []; }
+}
